@@ -59,6 +59,10 @@ namespace MapMapLib
 			this.container = null;
 			this.tiles.Clear();
 		}
+		
+		public void ResetTiles(){
+			this.tiles.Clear();
+		}
 	}
 
 	public class MMCellData

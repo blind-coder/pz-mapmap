@@ -17,6 +17,8 @@ namespace MapMap
 		private MMTextures tex;
 		private List<string> mapsources;
 		private List<string> gfxsources;
+		private List<string> tilesources;
+		private Dictionary<Int32, String> tileDefs;
 		private bool dolayers = true;
 		private bool packMode = false;
 		private bool unpack = false;
@@ -35,6 +37,8 @@ namespace MapMap
 			this.tex = new MMTextures();
 			this.mapsources = new List<string>();
 			this.gfxsources = new List<string>();
+			this.tilesources = new List<string>();
+			this.tileDefs = new Dictionary<Int32, String>();
 		}
 
 		public void Run(string[] args)
@@ -42,12 +46,12 @@ namespace MapMap
 			if (this.parseArgs(args))
 			{
 				this.readTexturePacks();
+				this.readTileDefs();
 				if (this.packMode == true)
 					this.packMapData();
 				else
 					this.parseMapData();
 				Console.WriteLine("Done...");
-				//var choice = Console.ReadKey(true);
 			}
 			else
 			{
@@ -66,41 +70,44 @@ namespace MapMap
 			MMCellReader cellReader = new MMCellReader();
 			MMBinReader binReader = new MMBinReader();
 			MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers);
-			foreach (string mapPath in this.mapsources)
-			{
-				if (Directory.Exists(mapPath))
-				{
+			foreach (string mapPath in this.mapsources) {
+				if (Directory.Exists(mapPath)) {
 					string[] packs = Directory.GetFiles(mapPath, "*.lotpack");
-					foreach (string file in packs)
-					{
+					foreach (string file in packs) {
 						string filename = file.Substring(file.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 						string[] fileparts = filename.Split(new Char[] { '.' });
 						string[] nameparts = fileparts[0].Split(new Char[] { '_' });
 						int cellx = Convert.ToInt32(nameparts[1]);
 						int celly = Convert.ToInt32(nameparts[2]);
-						if (cellx >= this.minX && cellx < this.maxX  && celly >= this.minY && celly < this.maxY)
-						{
+						if (cellx >= this.minX && cellx <= this.maxX  && celly >= this.minY && celly <= this.maxY) {
 							string headerFile = nameparts[1] + "_" + nameparts[2] + ".lotheader";
 							string headerPath = mapPath + Path.DirectorySeparatorChar + headerFile;
-							if (File.Exists(headerPath))
-							{
+							if (File.Exists(headerPath)) { // lotpack
 								Console.WriteLine("Working on cell: {0} - {1}", nameparts[1], nameparts[2]);
 								MMCellData mapdata = cellReader.Read(file, headerPath);
-								plotter.PlotData(mapdata, this.OutputDir, cellx, celly); 
+								mapdata.Reset();
+
+								foreach (string savePath in this.mapsources) {
+									string[] saves = Directory.GetFiles(savePath, "map_*_*.bin");
+									foreach (string binfile in saves){ // map_*_*.bin
+										string binfilename = binfile.Substring(binfile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+										string[] binfileparts = binfilename.Split(new Char[] { '.' });
+										string[] binnameparts = binfileparts[0].Split(new Char[] { '_' });
+										int gsX = Convert.ToInt32(binnameparts[1]);
+										int gsY = Convert.ToInt32(binnameparts[2]);
+										int binToCellX = (int)Math.Floor(gsX * 10D / 300);
+										int binToCellY = (int)Math.Floor(gsY * 10D / 300);
+										if (binToCellX == cellx && binToCellY == celly){
+											Console.WriteLine("Working on map_bin: {0} - {1}", binnameparts[1], binnameparts[2]);
+											binReader.Read(binfile, mapdata, tileDefs, gsX * 10 % 300, gsY * 10 % 300);
+										}
+									}
+								}
+								plotter.PlotData(mapdata, this.OutputDir, cellx, celly);
 							}
 						}
 					}
 
-					packs = Directory.GetFiles(mapPath, "map_*_*.bin");
-					foreach (string file in packs){
-						string filename = file.Substring(file.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-						string[] fileparts = filename.Split(new Char[] { '.' });
-						string[] nameparts = fileparts[0].Split(new Char[] { '_' });
-						// int cellx = Convert.ToInt32(nameparts[1]);
-						// int celly = Convert.ToInt32(nameparts[2]);
-						Console.WriteLine("Working on cell: {0} - {1}", nameparts[1], nameparts[2]);
-						binReader.Read(file);
-					}
 				}
 			}
 		}
@@ -111,6 +118,17 @@ namespace MapMap
 			{
 				this.tex.Load(packPath);
 			}
+		}
+
+		private void readTileDefs() {
+			MMTileDefReader t = new MMTileDefReader();
+			foreach (string packPath in this.tilesources) {
+				string[] tiledefs  = Directory.GetFiles(packPath, "*.tiles");
+				foreach (string file in tiledefs){
+					t.Load(file);
+				}
+			}
+			this.tileDefs = t.tileDefs;
 		}
 
 		private bool parseArgs(string[] args)
@@ -136,6 +154,9 @@ namespace MapMap
 							break;
 						case "-gfxsource":
 							this.gfxsources.Add( Path.GetFullPath(args[id + 1]) );
+							break;
+						case "-tiledef":
+							this.tilesources.Add(Path.GetFullPath(args[id + 1]));
 							break;
 						case "-dolayers":
 							this.dolayers = Convert.ToBoolean(args[id + 1]);

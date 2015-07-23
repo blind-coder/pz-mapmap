@@ -74,9 +74,6 @@ namespace MapMapLib
 											if (this.textures.Textures.ContainsKey(tile))
 											{
 												this.textures.Textures[tile].Draw(gfx, drawx, drawy);
-												if (subx == 1 && suby == 1 && drawCnt >= 9978 && drawCnt <= 9978){
-													this.subCell.Save(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_layer_" + z + "_drawcount_"+drawCnt+".png", System.Drawing.Imaging.ImageFormat.Png);
-												}
 												drawCnt++;
 											}
 										}
