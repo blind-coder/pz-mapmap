@@ -85,7 +85,6 @@ namespace MapMap
 							if (File.Exists(headerPath)) { // lotpack
 								Console.WriteLine("Working on cell: {0} - {1}", nameparts[1], nameparts[2]);
 								MMCellData mapdata = cellReader.Read(file, headerPath);
-								mapdata.Reset();
 
 								foreach (string savePath in this.mapsources) {
 									string[] saves = Directory.GetFiles(savePath, "map_*_*.bin");
@@ -98,7 +97,7 @@ namespace MapMap
 										int binToCellX = (int)Math.Floor(gsX * 10D / 300);
 										int binToCellY = (int)Math.Floor(gsY * 10D / 300);
 										if (binToCellX == cellx && binToCellY == celly){
-											Console.WriteLine("Working on map_bin: {0} - {1}", binnameparts[1], binnameparts[2]);
+											// Console.WriteLine("Working on map_bin: {0} - {1}", binnameparts[1], binnameparts[2]);
 											binReader.Read(binfile, mapdata, tileDefs, gsX * 10 % 300, gsY * 10 % 300);
 										}
 									}
@@ -114,8 +113,7 @@ namespace MapMap
 
 		private void readTexturePacks()
 		{
-			foreach (string packPath in this.gfxsources)
-			{
+			foreach (string packPath in this.gfxsources) {
 				this.tex.Load(packPath);
 			}
 		}

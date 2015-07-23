@@ -19,6 +19,7 @@ namespace MapMapLib {
 		private Dictionary<Int32, String> tileDefs;
 		private Int32 offX;
 		private Int32 offY;
+		private List<Int32> delayedSprites;
 
 		public MMBinReader() {
 			// this.cellData = new MMCellData();
@@ -26,8 +27,7 @@ namespace MapMapLib {
 		}
 
 		public void Read(string datafile, MMCellData celldata, Dictionary<Int32, String> tileDefs, Int32 offX, Int32 offY) {
-			// this.cellData.Reset();
-			// List<string> tiles = new List<string>();
+			this.delayedSprites = new List<Int32>();
 			this.celldata = celldata;
 			this.tileDefs = tileDefs;
 			this.offX = offX;
@@ -92,6 +92,7 @@ namespace MapMapLib {
 			String retVal = "";
 			for (; len > 0; len--){
 				retVal = String.Concat(retVal, binReader.ReadChar());
+				Console.WriteLine(retVal);
 			}
 			// Console.WriteLine("Read String: '{0}'", retVal);
 			// Console.WriteLine("Byte read now: {0}", byteRead);
@@ -169,11 +170,35 @@ namespace MapMapLib {
 			}
 		}/*}}}*/
 
+		public static String[] FloorBloodTypes = {
+			"blood_floor_small_01",
+			"blood_floor_small_02",
+			"blood_floor_small_03",
+			"blood_floor_small_04",
+			"blood_floor_small_05",
+			"blood_floor_small_06",
+			"blood_floor_small_07",
+			"blood_floor_small_08",
+			"blood_floor_med_01",
+			"blood_floor_med_02",
+			"blood_floor_med_03",
+			"blood_floor_med_04",
+			"blood_floor_med_05",
+			"blood_floor_med_06",
+			"blood_floor_med_07",
+			"blood_floor_med_08",
+			"blood_floor_large_01",
+			"blood_floor_large_02",
+			"blood_floor_large_03",
+			"blood_floor_large_04",
+			"blood_floor_large_05" };
+
 		private void ReadBloodSplat(){/*{{{*/
-			ReadByte();
-			ReadByte();
-			ReadByte();
-			ReadByte();
+			ReadByte(); //x
+			ReadByte(); //y
+			ReadByte(); //z
+			/* Byte b = */ ReadByte();
+			// TODO this.AddTile(FloorBloodTypes[b]);
 			ReadSingle();
 		}/*}}}*/
 
@@ -207,20 +232,38 @@ namespace MapMapLib {
 		const  Int32  Zombie              =  -1612488122;
 		/* }}} */
 
-		private void AddTile(Int32 spriteID){
+		private void AddTile(String spriteID){/*{{{*/
+			this.currentGS.AddTile(spriteID);
+		}/*}}}*/
+		private void AddTile(Int32 spriteID){/*{{{*/
 			String s;
 			this.tileDefs.TryGetValue(spriteID, out s);
 			this.currentGS.AddTile(s);
-		}
-		private void ReadGenericIsoObject(){/*{{{*/
+		}/*}}}*/
+		private void AddDelayedSprites(int fromHere){/*{{{*/
+			for (int i = fromHere; i<this.delayedSprites.Count; i++){
+				this.AddTile(this.delayedSprites[i]);
+			}
+		}/*}}}*/
+		private void ReadGenericIsoObject(bool addSprite){/*{{{*/
+			this.delayedSprites.Clear();
 			Int32 spriteID = ReadInt32(); // spriteID
-			this.AddTile(spriteID);
+			if (addSprite){
+				this.AddTile(spriteID);
+			} else {
+				this.delayedSprites.Add(spriteID);
+			}
 			string spritename = ReadString(); // spriteName
 			// Console.WriteLine("Object sprite: {0} (ID: {1})", spritename, spriteID);
 			Byte animSprites = ReadByte(); // numAnimSprites;
 			// Console.WriteLine("Found {0} animSprites", animSprites);
 			for (; animSprites > 0; animSprites--){ // we skip these
-				ReadInt32(); // sprite.ID // wtf
+				Int32 animSpriteID = ReadInt32(); // sprite.ID // wtf
+				if (addSprite){
+					this.AddTile(animSpriteID);
+				} else {
+					this.delayedSprites.Add(animSpriteID);
+				}
 				if (ReadByte() == 0){
 					ReadSingle();
 					ReadSingle();
@@ -247,7 +290,13 @@ namespace MapMapLib {
 			if (ReadByte() == 1){
 				/* read overlay sprite */
 				String ovsprite = ReadString(); // spritename
-				// Console.WriteLine("Overlaysprite: {0}", ovsprite);
+				Int32 ovspriteID = this.tileDefs.FirstOrDefault(x => x.Value == ovsprite).Key;
+				if (addSprite){
+					this.AddTile(ovspriteID);
+				} else {
+					this.delayedSprites.Add(ovspriteID);
+				}
+				// Console.WriteLine("Overlaysprite: '{0}'", ovsprite);
 				if (ReadByte() == 1){
 					ReadSingle();
 					ReadSingle();
@@ -262,9 +311,10 @@ namespace MapMapLib {
 				ReadSingle(); // age
 				ReadInt32(); // id
 			}
+			return;
 		}/*}}}*/
 		private void ReadIsoBarbecue(){/*{{{*/
-			ReadGenericIsoObject(); 
+			ReadGenericIsoObject(false); 
 			Byte hasPropaneTank = ReadByte(); // haspropanetank
 			ReadInt32(); // fuel amount
 			ReadByte(); // islit
@@ -278,13 +328,14 @@ namespace MapMapLib {
 			}
 			if (ReadByte() == 1){
 				Int32 spriteID = ReadInt32(); // notanksprite
-				if (hasPropaneTank == 1){
+				if (hasPropaneTank == 0){
 					this.AddTile(spriteID);
 				}
 			}
+			AddDelayedSprites(0);
 		}/*}}}*/
 		private void ReadIsoBarricade(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadInt32(); // health
 			ReadInt32(); // maxHealth
 			ReadInt32(); // BarricideStrength
@@ -343,16 +394,16 @@ namespace MapMapLib {
 			ReadSingle(); // healthfromfoodtimer
 		}/*}}}*/
 		private void ReadIsoCrate(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadInt32(); // container ID
 		}/*}}}*/
 		private void ReadIsoCurtain(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadByte(); // open
 			ReadByte(); // north
 			ReadInt32(); // health
 			ReadInt32(); // BarricideStrength
-			this.AddTile(ReadInt32()); // sprite ID
+			ReadInt32(); // sprite ID for !open
 		}/*}}}*/
 		private void ReadIsoDeadBody(){/*{{{*/
 			ReadSingle();
@@ -368,37 +419,37 @@ namespace MapMapLib {
 			if (ReadByte() == 1){ // bServer
 				ReadInt16();
 			} else {
-				ReadString(); // legsprite
+				this.AddTile(ReadString()); // legsprite
 				ReadSingle();
 				ReadSingle();
 				ReadSingle();
 				ReadSingle();
 				if (ReadByte() == 1){
-					ReadString(); // torsosprite
+					this.AddTile(ReadString()); // torsosprite
 				}
 				if (ReadByte() == 1){
-					ReadString(); // headsprite
-					ReadSingle();
-					ReadSingle();
-					ReadSingle();
-					ReadSingle();
-				}
-				if (ReadByte() == 1){
-					ReadString(); // bottomsprite
+					this.AddTile(ReadString()); // headsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 				}
 				if (ReadByte() == 1){
-					ReadString(); // shoesprite
+					this.AddTile(ReadString()); // bottomsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 				}
 				if (ReadByte() == 1){
-					ReadString(); // topsprite
+					this.AddTile(ReadString()); // shoesprite
+					ReadSingle();
+					ReadSingle();
+					ReadSingle();
+					ReadSingle();
+				}
+				if (ReadByte() == 1){
+					this.AddTile(ReadString()); // topsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
@@ -406,7 +457,7 @@ namespace MapMapLib {
 				}
 				Int32 extraSprites = ReadInt32();
 				for (; extraSprites > 0; extraSprites--){
-					ReadString(); // extrasprite
+					this.AddTile(ReadString()); // extrasprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
@@ -446,7 +497,7 @@ namespace MapMapLib {
 			ReadSingle(); // reanimate time
 		}/*}}}*/
 		private void ReadIsoDoor(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(false);
 			Byte open = ReadByte(); // open
 			ReadByte(); // locked
 			ReadByte(); // north
@@ -457,12 +508,14 @@ namespace MapMapLib {
 			ReadInt16(); // BarricideMaxStrength
 			Int32 closed = ReadInt32(); // closedsprite
 			Int32 opened = ReadInt32(); // openedsprite
+			this.AddTile(open == 1 ? opened : closed);
 			// Console.WriteLine("IsoDoor sprite: {0}", open == 1 ? opened : closed);
 			ReadInt32(); // keyid
 			ReadByte(); // locked by key
+			AddDelayedSprites(0);
 		}/*}}}*/
 		private void ReadIsoFire(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadInt32(); // Life
 			ReadInt32(); // SpreadDelay
 			ReadInt32(); // LifeStage
@@ -476,14 +529,14 @@ namespace MapMapLib {
 			ReadByte(); // age
 		}/*}}}*/
 		private void ReadIsoFireplace(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadInt32(); // fuelamount
 			ReadByte(); // lit
 			ReadSingle(); // lastupdate
 			ReadInt32(); // minutes since extinguished
 		}/*}}}*/
 		private void ReadIsoGenerator(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadByte(); // isconnected
 			ReadByte(); // activated
 			ReadInt32(); // fuel
@@ -491,7 +544,7 @@ namespace MapMapLib {
 			ReadInt32(); // lasthour
 		}/*}}}*/
 		private void ReadIsoTrap(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadInt32(); // sensorrange
 			ReadInt32(); // firepower
 			ReadInt32(); // firerange
@@ -503,7 +556,7 @@ namespace MapMapLib {
 			ReadInt32(); // remotecontrolid
 		}/*}}}*/
 		private void ReadIsoLightSwitch(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadByte(); // lightroom
 			ReadInt32(); // roomid
 			ReadByte(); // activated
@@ -609,7 +662,7 @@ namespace MapMapLib {
 			}
 		}/*}}}*/
 		private void ReadIsoStove(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadByte(); // activated
 		}/*}}}*/
 		private void ReadIsoSurvivor(){/*{{{*/
@@ -669,8 +722,8 @@ namespace MapMapLib {
 			ReadSingle(); // thirst     
 		}/*}}}*/
 		private void ReadIsoThumpable(){/*{{{*/
-			ReadGenericIsoObject();
-			ReadByte(); // open
+			ReadGenericIsoObject(false);
+			Byte open = ReadByte(); // open
 			ReadByte(); // locked
 			ReadByte(); // north
 			ReadInt32(); // barricaded
@@ -678,10 +731,12 @@ namespace MapMapLib {
 			ReadInt32(); // maxhealth
 			ReadInt32(); // BarricideStrength
 			ReadInt16(); // BarricideMaxStrength
-			ReadInt32(); // closed sprite
+			Int32 closed = ReadInt32(); // closed sprite
+			Int32 opened = -1;
 			if (ReadInt32() == 1){
-				ReadInt32(); // opened sprite
+				opened = ReadInt32(); // opened sprite
 			}
+			this.AddTile(open == 1 ? opened : closed);
 			ReadInt32(); // thump damage
 			ReadString(); // name
 			ReadByte(); // isDoor
@@ -724,15 +779,16 @@ namespace MapMapLib {
 			ReadByte(); // lockedbypadlock
 			ReadByte(); // canbelockedbypadlock
 			ReadInt32(); // lockedbykeycode
+			AddDelayedSprites(0);
 		}/*}}}*/
 		private void ReadIsoTree(){/*{{{*/
-			ReadGenericIsoObject();
+			ReadGenericIsoObject(true);
 			ReadInt32(); // logYield
 			ReadInt32(); // damage
 		}/*}}}*/
 		private void ReadIsoWindow(){/*{{{*/
-			ReadGenericIsoObject();
-			ReadByte(); // open
+			ReadGenericIsoObject(false);
+			Byte open = ReadByte(); // open
 			ReadByte(); // north
 			ReadInt32(); // barricaded
 			ReadInt32(); // health
@@ -740,24 +796,30 @@ namespace MapMapLib {
 			ReadInt16(); // BarricideMaxStrength
 			ReadByte(); // locked
 			ReadByte(); // permalocked
-			ReadByte(); // destroyed
-			ReadByte(); // glass removed
+			Byte destroyed = ReadByte(); // destroyed
+			Byte glassremoved = ReadByte(); // glass removed
+			Int32 opened = -1;
+			Int32 closed = -1;
+			Int32 smashed = -1;
+			Int32 noglass = -1;
 			if (ReadByte() == 1){
-				ReadInt32(); // open sprite
+				opened = ReadInt32(); // open sprite
 			}
 			if (ReadByte() == 1){
-				ReadInt32(); // closed sprite
+				closed = ReadInt32(); // closed sprite
 			}
 			if (ReadByte() == 1){
-				ReadInt32(); // smashed sprite
+				smashed = ReadInt32(); // smashed sprite
 			}
 			if (ReadByte() == 1){
-				ReadInt32(); // glass removed sprite
+				noglass = ReadInt32(); // glass removed sprite
 			}
+			this.AddTile(open == 1 ? opened : destroyed == 1 ? smashed : glassremoved == 1 ? noglass : closed);
+			AddDelayedSprites(0);
 			ReadInt32(); // maxhealth
 		}/*}}}*/
 		private void ReadIsoWoodenWall(){/*{{{*/
-			ReadByte(); // open
+			Byte open = ReadByte(); // open
 			ReadByte(); // locked
 			ReadByte(); // north
 			ReadInt32(); // Barricaded
@@ -765,8 +827,9 @@ namespace MapMapLib {
 			ReadInt32(); // maxhealth
 			ReadInt32(); // BarricideStrength
 			ReadInt16(); // BarricideMaxStrength
-			ReadInt32(); // closed sprite
-			ReadInt32(); // open sprite
+			Int32 opened = ReadInt32(); // closed sprite
+			Int32 closed = ReadInt32(); // open sprite
+			this.AddTile(open == 1 ? opened : closed);
 		}/*}}}*/
 		private void ReadIsoWorldInventoryItem(){/*{{{*/
 			ReadSingle(); // xoff
@@ -841,14 +904,14 @@ namespace MapMapLib {
 				case Fire: ReadIsoFire(); break;
 				case Fireplace: ReadIsoFireplace(); break;
 				case IsoGenerator: ReadIsoGenerator(); break;
-				case IsoObject: ReadGenericIsoObject(); break;
+				case IsoObject: ReadGenericIsoObject(true); break;
 				case IsoTrap: ReadIsoTrap(); break;
-				case Jukebox: ReadGenericIsoObject(); break;
+				case Jukebox: ReadGenericIsoObject(true); break;
 				case LightSwitch: ReadIsoLightSwitch(); break;
-				case MolotovCocktail: ReadGenericIsoObject(); break;
+				case MolotovCocktail: ReadGenericIsoObject(true); break;
 				case Player: ReadIsoPlayer(false); break;
 				case Pushable: ReadIsoPushable(false); break;
-				case Radio: ReadGenericIsoObject(); break;
+				case Radio: ReadGenericIsoObject(true); break;
 				case Stove: ReadIsoStove(); break;
 				case Survivor: ReadIsoSurvivor(); break;
 				case Thumpable: ReadIsoThumpable(); break;
@@ -859,7 +922,7 @@ namespace MapMapLib {
 				case WorldInventoryItem: ReadIsoWorldInventoryItem(); break;
 				case ZombieGiblets: ReadIsoMovingObject(); break;
 				case Zombie: ReadIsoZombie(); break;
-				default: ReadGenericIsoObject();
+				default: ReadGenericIsoObject(true);
 				break;
 			}
 
