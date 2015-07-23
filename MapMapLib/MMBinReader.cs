@@ -92,7 +92,6 @@ namespace MapMapLib {
 			String retVal = "";
 			for (; len > 0; len--){
 				retVal = String.Concat(retVal, binReader.ReadChar());
-				Console.WriteLine(retVal);
 			}
 			// Console.WriteLine("Read String: '{0}'", retVal);
 			// Console.WriteLine("Byte read now: {0}", byteRead);
