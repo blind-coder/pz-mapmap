@@ -86,7 +86,6 @@ namespace MapMapLib {
 			Console.WriteLine("Got {0} tilesheets", numTileSheets);
 			
 			for (Int32 idxTileSheet = 0; idxTileSheet < numTileSheets; idxTileSheet++){
-				Console.WriteLine("Tilesheet {0}", idxTileSheet);
 				String name = ReadString();
 				// Console.WriteLine("Name: {0}", name);
 				ReadString();
