@@ -253,7 +253,7 @@ namespace MapMapLib {
 			} else {
 				this.delayedSprites.Add(spriteID);
 			}
-			string spritename = ReadString(); // spriteName
+			/* string spritename = */ ReadString(); // spriteName
 			// Console.WriteLine("Object sprite: {0} (ID: {1})", spritename, spriteID);
 			Byte animSprites = ReadByte(); // numAnimSprites;
 			// Console.WriteLine("Found {0} animSprites", animSprites);

@@ -124,8 +124,8 @@ namespace MapMapLib {
 
 					Int32 nProps = ReadInt32();
 					for (Int32 idxProp = 0; idxProp < nProps; idxProp++){
-						String prop = ReadString();
-						String val = ReadString();
+						/* String prop = */ ReadString();
+						/* String val = */ ReadString();
 						// Console.WriteLine("{0} = {1}", prop, val);
 					}
 				}
