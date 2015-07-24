@@ -11,7 +11,6 @@ using System.IO;
 
 namespace MapMapLib {
 	public class MMBinReader {
-		// private MMCellData cellData;
 		private BinaryReader binReader;
 		private Int32 byteRead;
 		private MMCellData celldata;
@@ -20,6 +19,7 @@ namespace MapMapLib {
 		private Int32 offX;
 		private Int32 offY;
 		private List<Int32> delayedSprites;
+		private bool debug = false;
 
 		public MMBinReader() {
 			// this.cellData = new MMCellData();
@@ -42,7 +42,7 @@ namespace MapMapLib {
 		// map_*_*.bin are big-endian, need to convert here
 		private Byte ReadByte(){/*{{{*/
 			byteRead++;
-			// Console.WriteLine("Byte read now: {0}", byteRead);
+			if (debug) Console.WriteLine("Byte read now: {0}", byteRead);
 			return binReader.ReadByte();
 		}/*}}}*/
 		private Int16 ReadInt16(){/*{{{*/
@@ -50,7 +50,7 @@ namespace MapMapLib {
 			byte[] a16 = new byte[2];
 			a16 = binReader.ReadBytes(2);
 			Array.Reverse(a16);
-			// Console.WriteLine("Byte read now: {0}", byteRead);
+			if (debug) Console.WriteLine("Byte read now: {0}", byteRead);
 			return BitConverter.ToInt16(a16, 0);
 		}/*}}}*/
 		private Int32 ReadInt32(){/*{{{*/
@@ -58,7 +58,7 @@ namespace MapMapLib {
 			byte[] a32 = new byte[4];
 			a32 = binReader.ReadBytes(4);
 			Array.Reverse(a32);
-			// Console.WriteLine("Byte read now: {0}", byteRead);
+			if (debug) Console.WriteLine("Byte read now: {0}", byteRead);
 			return BitConverter.ToInt32(a32, 0);
 		}/*}}}*/
 		private Int64 ReadInt64(){/*{{{*/
@@ -66,7 +66,7 @@ namespace MapMapLib {
 			byte[] a64 = new byte[8];
 			a64 = binReader.ReadBytes(8);
 			Array.Reverse(a64);
-			// Console.WriteLine("Byte read now: {0}", byteRead);
+			if (debug) Console.WriteLine("Byte read now: {0}", byteRead);
 			return BitConverter.ToInt64(a64, 0);
 		}/*}}}*/
 		private Single ReadSingle(){/*{{{*/
@@ -74,7 +74,7 @@ namespace MapMapLib {
 			byte[] a32 = new byte[4];
 			a32 = binReader.ReadBytes(4);
 			Array.Reverse(a32);
-			// Console.WriteLine("Byte read now: {0}", byteRead);
+			if (debug) Console.WriteLine("Byte read now: {0}", byteRead);
 			return BitConverter.ToSingle(a32, 0);
 		}/*}}}*/
 		private Double ReadDouble(){/*{{{*/
@@ -82,19 +82,19 @@ namespace MapMapLib {
 			byte[] a64 = new byte[8];
 			a64 = binReader.ReadBytes(8);
 			Array.Reverse(a64);
-			// Console.WriteLine("Byte read now: {0}", byteRead);
+			if (debug) Console.WriteLine("Byte read now: {0}", byteRead);
 			return BitConverter.ToDouble(a64, 0);
 		}/*}}}*/
 		private string ReadString(){/*{{{*/
 			Int16 len = ReadInt16();
 			byteRead+=len;
-			// Console.WriteLine("Got string length: {0}", len);
+			if (debug) Console.WriteLine("Got string length: {0}", len);
 			String retVal = "";
 			for (; len > 0; len--){
 				retVal = String.Concat(retVal, binReader.ReadChar());
 			}
-			// Console.WriteLine("Read String: '{0}'", retVal);
-			// Console.WriteLine("Byte read now: {0}", byteRead);
+			if (debug) Console.WriteLine("Read String: '{0}'", retVal);
+			if (debug) Console.WriteLine("Byte read now: {0}", byteRead);
 			return retVal;
 		}/*}}}*/
 
@@ -102,7 +102,7 @@ namespace MapMapLib {
 			ReadString(); // type
 			ReadByte(); // explored
 			Int32 numItems = ReadInt16();
-			// Console.WriteLine("Contains {0} items", numItems);
+			if (debug) Console.WriteLine("Contains {0} items", numItems);
 			for (; numItems > 0; numItems--){/*{{{*/
 				Int16 dataLen = ReadInt16(); // dataLen
 				binReader.ReadBytes(dataLen);
@@ -113,7 +113,7 @@ namespace MapMapLib {
 				ReadInt32(); // uses
 				ReadInt64(); // ID
 				if (ReadByte() == 1){
-					// Console.WriteLine("Has Kahlua Table");
+					if (debug) Console.WriteLine("Has Kahlua Table");
 					ReadKahluaTable();
 				}
 				if (ReadByte() == 1){
@@ -153,14 +153,14 @@ namespace MapMapLib {
 			} else if (b == 3){
 				ReadByte();
 			} else if (b == 2){
-				// Console.WriteLine("Nested table start");
+				if (debug) Console.WriteLine("Nested table start");
 				ReadKahluaTable();
-				// Console.WriteLine("Nested table end");
+				if (debug) Console.WriteLine("Nested table end");
 			}
 		}/*}}}*/
 		private void ReadKahluaTable(){/*{{{*/
 			Int32 numItems = ReadInt32();
-			// Console.WriteLine("Kahlua Table has {0} items", numItems);
+			if (debug) Console.WriteLine("Kahlua Table has {0} items", numItems);
 			for (; numItems > 0; numItems--){
 				Byte b = ReadByte();
 				ReadKahluaTable2(b);
@@ -169,7 +169,7 @@ namespace MapMapLib {
 			}
 		}/*}}}*/
 
-		public static String[] FloorBloodTypes = {
+		public static String[] FloorBloodTypes = {/*{{{*/
 			"blood_floor_small_01",
 			"blood_floor_small_02",
 			"blood_floor_small_03",
@@ -190,7 +190,7 @@ namespace MapMapLib {
 			"blood_floor_large_02",
 			"blood_floor_large_03",
 			"blood_floor_large_04",
-			"blood_floor_large_05" };
+			"blood_floor_large_05" };/*}}}*/
 
 		private void ReadBloodSplat(){/*{{{*/
 			ReadByte(); //x
@@ -252,10 +252,10 @@ namespace MapMapLib {
 			} else {
 				this.delayedSprites.Add(spriteID);
 			}
-			/* string spritename = */ ReadString(); // spriteName
-			// Console.WriteLine("Object sprite: {0} (ID: {1})", spritename, spriteID);
+			string spritename = ReadString(); // spriteName
+			if (debug) Console.WriteLine("Object sprite: {0} (ID: {1})", spritename, spriteID);
 			Byte animSprites = ReadByte(); // numAnimSprites;
-			// Console.WriteLine("Found {0} animSprites", animSprites);
+			if (debug) Console.WriteLine("Found {0} animSprites", animSprites);
 			for (; animSprites > 0; animSprites--){ // we skip these
 				Int32 animSpriteID = ReadInt32(); // sprite.ID // wtf
 				if (addSprite){
@@ -278,11 +278,11 @@ namespace MapMapLib {
 				ReadString(); // Object name
 			}
 			if (ReadByte() != 0){
-				// Console.WriteLine("Object has container");
+				if (debug) Console.WriteLine("Object has container");
 				ReadContainer();
 			}
 			if (ReadByte() == 1){
-				// Console.WriteLine("Object has Kahlua Table");
+				if (debug) Console.WriteLine("Object has Kahlua Table");
 				ReadKahluaTable();
 			}
 			ReadByte(); // outline on mouseover
@@ -295,7 +295,7 @@ namespace MapMapLib {
 				} else {
 					this.delayedSprites.Add(ovspriteID);
 				}
-				// Console.WriteLine("Overlaysprite: '{0}'", ovsprite);
+				if (debug) Console.WriteLine("Overlaysprite: '{0}'", ovsprite);
 				if (ReadByte() == 1){
 					ReadSingle();
 					ReadSingle();
@@ -405,15 +405,7 @@ namespace MapMapLib {
 			ReadInt32(); // sprite ID for !open
 		}/*}}}*/
 		private void ReadIsoDeadBody(){/*{{{*/
-			ReadSingle();
-			ReadSingle();
-			ReadSingle();
-			ReadSingle();
-			ReadSingle();
-			ReadInt32();
-			if (ReadByte() == 1){
-				ReadKahluaTable();
-			}
+			ReadIsoMovingObject();
 			ReadByte(); // wasZombie
 			if (ReadByte() == 1){ // bServer
 				ReadInt16();
@@ -464,25 +456,27 @@ namespace MapMapLib {
 				}
 			}
 			if (ReadByte() == 1){ // Survivordesc/*{{{*/
-				ReadInt32();
-				ReadString(); ReadString(); ReadString(); ReadString();
-				ReadString(); ReadString(); ReadString(); ReadString();
-				ReadString(); ReadString(); ReadString(); ReadString();
-				ReadString();
+				ReadInt32(); // ID
+				ReadString(); ReadString(); ReadString(); ReadString(); // forename, surname, legs, torso
+				ReadString(); ReadString(); ReadString(); ReadString(); // head, top, bottom, shoes
+				ReadString(); ReadString(); ReadString(); ReadString(); // shoepal, bottompal, toppal, skinpal
+				ReadString(); // hair
 				ReadInt32(); // gender
-				ReadString();
-				ReadSingle(); ReadSingle(); ReadSingle();
-				ReadSingle(); ReadSingle(); ReadSingle();
-				ReadSingle(); ReadSingle(); ReadSingle();
-				ReadSingle(); ReadSingle(); ReadSingle();
+				ReadString(); // profession
+				ReadSingle(); ReadSingle(); ReadSingle(); //haircolor
+				ReadSingle(); ReadSingle(); ReadSingle(); // topcolor
+				ReadSingle(); ReadSingle(); ReadSingle(); // trousercolor
+				ReadSingle(); ReadSingle(); ReadSingle(); // skincolor
 				if (ReadInt32() == 1){
-					ReadInt32();
-					ReadString();
-					Int32 numPerks = ReadInt32();
+					Int32 numPerks = ReadInt32(); // size
 					for (; numPerks > 0; numPerks--){
-						ReadInt32();
-						ReadInt32();
+						ReadString();
 					}
+				}
+				Int32 xpBoost = ReadInt32(); // size
+				for (; xpBoost > 0; xpBoost--){
+					ReadInt32();
+					ReadInt32();
 				}
 			}/*}}}*/
 			if (ReadByte() == 1){
@@ -508,7 +502,7 @@ namespace MapMapLib {
 			Int32 closed = ReadInt32(); // closedsprite
 			Int32 opened = ReadInt32(); // openedsprite
 			this.AddTile(open == 1 ? opened : closed);
-			// Console.WriteLine("IsoDoor sprite: {0}", open == 1 ? opened : closed);
+			if (debug) Console.WriteLine("IsoDoor sprite: {0}", open == 1 ? opened : closed);
 			ReadInt32(); // keyid
 			ReadByte(); // locked by key
 			AddDelayedSprites(0);
@@ -566,6 +560,7 @@ namespace MapMapLib {
 			ReadSingle(); // X
 			ReadSingle(); //Y
 			ReadSingle(); // Z
+			ReadInt32(); // directions
 			if (ReadByte() == 1){
 				ReadKahluaTable();
 			}
@@ -888,11 +883,11 @@ namespace MapMapLib {
 
 			b = ReadByte(); // serialize
 			if (b == 0){
-				// Console.WriteLine("Object not saved");
+				if (debug) Console.WriteLine("Object not saved");
 				return;
 			}
 			Int32 classID = ReadInt32();
-			// Console.WriteLine("Class ID: {0}", classID); // classID
+			if (debug) Console.WriteLine("Class ID: {0}", classID); // classID
 			switch (classID){
 				case Barbecue: ReadIsoBarbecue(); break;
 				case Barricade: ReadIsoBarricade(); break;
@@ -958,7 +953,7 @@ namespace MapMapLib {
 					ReadInt16(); // spawnTime
 					ReadByte(); // notGrass
 				} else {
-					// Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
+					if (debug) Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
 				}
 			} else if (regionID == 1){
 				if (catID == 0){
@@ -969,7 +964,7 @@ namespace MapMapLib {
 					ReadInt32(); // curID
 					ReadByte(); // hasGrass
 				} else {
-					// Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
+					if (debug) Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
 				}
 			} else if (regionID == 2){
 				if (catID == 0){
@@ -996,14 +991,14 @@ namespace MapMapLib {
 						ReadSingle(); // alpha
 					}
 				} else {
-					// Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
+					if (debug) Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
 				}
 			} else if (regionID == 3){
 				if (catID == 0){
 					ReadGenericErosionData();
 					ReadByte(); // gameObj
 				} else {
-					// Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
+					if (debug) Console.WriteLine("Unknown Region {0} Category {1}", regionID, catID);
 				}
 			}
 		}/*}}}*/
@@ -1012,7 +1007,7 @@ namespace MapMapLib {
 			ReadInt16(); // hourLastSeen
 
 			Int32 numIsoObjects = ReadInt32();
-			// Console.WriteLine("Got {0} objects", numIsoObjects);
+			if (debug) Console.WriteLine("Got {0} objects", numIsoObjects);
 			for (; numIsoObjects > 0; numIsoObjects--){
 				ReadByte(); // bSpecial
 				ReadByte(); // bWorld
@@ -1020,35 +1015,35 @@ namespace MapMapLib {
 			}
 
 			Int32 numBodies = ReadInt32();
-			// Console.WriteLine("Got {0} bodies", numBodies);
+			if (debug) Console.WriteLine("Got {0} bodies", numBodies);
 			for (; numBodies > 0; numBodies--){
 				ReadIsoObject();
 			}
 
 			if (ReadByte() != 0){
-				// Console.WriteLine("Got a Kahlua table");
+				if (debug) Console.WriteLine("Got a Kahlua table");
 				ReadKahluaTable();
 			}
 
 			ReadByte(); // flags
 
 			if (ReadByte() == 1){
-				// Console.WriteLine("Got ErosionData");
+				if (debug) Console.WriteLine("Got ErosionData");
 				ReadByte(); // donothing
 				ReadSingle(); // noisemain
 				ReadByte(); // soil
 				ReadSingle(); // magicnum
 				Byte count = ReadByte();
-				// Console.WriteLine("Got {0} areas", count);
+				if (debug) Console.WriteLine("Got {0} areas", count);
 				for (; count > 0; count--){
 					ReadErosionDataAreas();
 				}
 			} else {
-				// Console.WriteLine("ErosionData is unitilised");
+				if (debug) Console.WriteLine("ErosionData is unitilised");
 			}
 
 			if (ReadByte() == 1){
-				// Console.WriteLine("Found a trap");
+				if (debug) Console.WriteLine("Found a trap");
 				ReadInt32();
 				ReadInt32();
 				ReadInt32();
@@ -1061,14 +1056,14 @@ namespace MapMapLib {
 			// MMGridSquare gs;
 			Int32 version = ReadInt32();
 			if (version != 68 && version != 67){
-				// Console.WriteLine("Cannot handle map version {0}!", version);
+				if (debug) Console.WriteLine("Cannot handle map version {0}!", version);
 				return;
 			}
 			ReadInt32(); // size of map data
 			ReadInt64(); // CRC of map data
 
 			Int32 numSplats = ReadInt32();
-			// Console.WriteLine("{0} blodsplats on floor", numSplats);
+			if (debug) Console.WriteLine("{0} blodsplats on floor", numSplats);
 			for (; numSplats > 0; numSplats--){
 				ReadBloodSplat();
 			}
@@ -1076,12 +1071,12 @@ namespace MapMapLib {
 			for (Int32 cz = 0; cz < 8; cz++) {
 				for (Int32 cx = 0; cx < 10; cx++) {
 					for (Int32 cy = 0; cy < 10; cy++) {
-						// Console.WriteLine("{0}x{1}x{2}", cx, cy, cz);
+						if (debug) Console.WriteLine("{0}x{1}x{2}", cx, cy, cz);
 						Byte issaved = ReadByte();
 						if (issaved == 0) {
-							// Console.WriteLine("GridSquare not saved");
+							if (debug) Console.WriteLine("GridSquare not saved");
 						} else {
-							// Console.WriteLine("GridSquare saved ({0})", issaved);
+							if (debug) Console.WriteLine("GridSquare saved ({0})", issaved);
 							this.currentGS = this.celldata.GetSquare(cx+this.offX, cy+this.offY, cz);
 							this.currentGS.ResetTiles();
 							ReadGridSquare();
@@ -1091,7 +1086,7 @@ namespace MapMapLib {
 			}
 
 			if (ReadByte() == 1){
-				// Console.WriteLine("Got more erosiondata");
+				if (debug) Console.WriteLine("Got more erosiondata");
 				ReadInt32();
 				ReadInt32();
 				ReadSingle();
