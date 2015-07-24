@@ -71,7 +71,7 @@ namespace MapMapLib
 									{
 										foreach (string tile in gs.GetTiles())
 										{
-											if (this.textures.Textures.ContainsKey(tile))
+											if (tile != null && this.textures.Textures.ContainsKey(tile))
 											{
 												this.textures.Textures[tile].Draw(gfx, drawx, drawy);
 												drawCnt++;
