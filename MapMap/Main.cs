@@ -17,6 +17,7 @@ namespace MapMap
 		private MMTextures tex;
 		private List<string> mapsources;
 		private List<string> gfxsources;
+		private List<string> gfxdirs;
 		private List<string> tilesources;
 		private Dictionary<Int32, String> tileDefs;
 		private bool dolayers = true;
@@ -37,6 +38,7 @@ namespace MapMap
 			this.tex = new MMTextures();
 			this.mapsources = new List<string>();
 			this.gfxsources = new List<string>();
+			this.gfxdirs = new List<string>();
 			this.tilesources = new List<string>();
 			this.tileDefs = new Dictionary<Int32, String>();
 		}
@@ -116,6 +118,9 @@ namespace MapMap
 			foreach (string packPath in this.gfxsources) {
 				this.tex.Load(packPath);
 			}
+			foreach (string dir in this.gfxdirs) {
+				this.tex.LoadTextureDir(dir);
+			}
 		}
 
 		private void readTileDefs() {
@@ -152,6 +157,9 @@ namespace MapMap
 							break;
 						case "-gfxsource":
 							this.gfxsources.Add( Path.GetFullPath(args[id + 1]) );
+							break;
+						case "-gfxdir":
+							this.gfxdirs.Add(Path.GetFullPath(args[id + 1]));
 							break;
 						case "-tiledef":
 							this.tilesources.Add(Path.GetFullPath(args[id + 1]));

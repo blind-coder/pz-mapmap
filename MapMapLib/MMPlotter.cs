@@ -75,8 +75,8 @@ namespace MapMapLib
 											{
 												this.textures.Textures[tile].Draw(gfx, drawx, drawy);
 												drawCnt++;
-											// } else {
-												// Console.WriteLine("Unknown texture: {0}", tile);
+											 } else {
+												 Console.WriteLine("Unknown texture: {0}", tile);
 											}
 										}
 									}

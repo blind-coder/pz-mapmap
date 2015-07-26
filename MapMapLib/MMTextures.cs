@@ -27,7 +27,36 @@ namespace MapMapLib
 			this.Sheets = new Dictionary<string, Dictionary<string, MMTextureData>>();
 		}
 
-		public void Load(string path)
+		public void LoadTextureDir(string path){
+			if (Directory.Exists(path)){
+				foreach (string sheetDir in Directory.GetDirectories(path, "*")){
+					string sheetName = sheetDir.Substring(sheetDir.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+					Console.WriteLine("Got sheet: {0}", sheetName);
+					if (!this.Sheets.ContainsKey(sheetName)){
+						this.Sheets.Add(sheetName, new Dictionary<string, MMTextureData>());
+					}
+
+					foreach (string textureFile in Directory.GetFiles(sheetDir, "*png")){
+						Image img = Image.FromFile(textureFile, true);
+						Bitmap bm = new Bitmap(img);
+						string textureName = textureFile.Substring(textureFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+						textureName = (textureName.Split(new Char[] { '.' }))[0];
+						MMTextureData tex = new MMTextureData(0, 0, bm.Width, bm.Height, 0, 0, 0, 0, textureName);
+						tex.SetData(bm);
+
+						if (!this.Textures.ContainsKey(tex.name)){
+							this.Textures.Add(tex.name, tex);
+						}
+						if (!this.Sheets[sheetName].ContainsKey(tex.name))
+							this.Sheets[sheetName].Add(tex.name, tex);
+					}
+				}
+			} else {
+				Console.WriteLine("Texture path does not exist: {0}", Path.GetFileName(path));
+			}
+		}
+
+		public void Load(string path)/*{{{*/
 		{
 			if (Path.GetExtension(path) == ".pack" && File.Exists(path))
 			{
@@ -41,9 +70,8 @@ namespace MapMapLib
 			{
 				Console.WriteLine("Texture data path invalid or doesnt exist: {0}", Path.GetFileName(path));
 			}
-		}
-
-		private void readPackFile(BinaryReader binReader)
+		}/*}}}*/
+		private void readPackFile(BinaryReader binReader)/*{{{*/
 		{
 			int nCount = binReader.ReadInt32();
 			Console.WriteLine("Sheet count: {0}", nCount);
@@ -52,9 +80,8 @@ namespace MapMapLib
 			{
 				loadFromPackFile(binReader, nn);
 			}
-		}
-
-		private string readString(BinaryReader binReader)
+		}/*}}}*/
+		private string readString(BinaryReader binReader)/*{{{*/
 		{
 			this.strBuilder.Clear();
 			int l = binReader.ReadInt32();
@@ -63,18 +90,15 @@ namespace MapMapLib
 				this.strBuilder.Append(binReader.ReadChar());
 			}
 			return this.strBuilder.ToString();
-		}
-
-		private int readInt(byte[] buffer)
+		}/*}}}*/
+		private int readInt(byte[] buffer)/*{{{*/
 		{
 			return buffer[0] << 24 | (buffer[1] & 0xFF) << 16 | (buffer[2] & 0xFF) << 8 | buffer[3] & 0xFF;
-		}
-
-		private void loadFromPackFile(BinaryReader binReader, int sn)
+		}/*}}}*/
+		private void loadFromPackFile(BinaryReader binReader, int sn)/*{{{*/
 		{
 			List<MMTextureData> TempSubTextureInfo = new List<MMTextureData>();
 			string name = readString(binReader);
-			Console.WriteLine("Name: {0}", name);
 			int numEntries = binReader.ReadInt32();
 			/* bool mask = */ binReader.ReadInt32()/* != 0*/;
 			for (int n = 0; n < numEntries; n++)
@@ -149,8 +173,6 @@ namespace MapMapLib
 			{
 				id = binReader.ReadInt32();
 			} while (id != -559038737);
-		}
-
-
+		}/*}}}*/
 	}
 }
