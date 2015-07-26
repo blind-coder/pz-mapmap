@@ -9,25 +9,48 @@ using System.Text;
 
 namespace MapMapLib
 {
+	public class MMTile
+	{
+		public String tile;
+		public Int32 offX;
+		public Int32 offY;
+
+		public MMTile(String tilename){
+			this.tile = tilename;
+			this.offX = this.offY = 0;
+		}
+		public MMTile(String tilename, Int32 x, Int32 y){
+			this.tile = tilename;
+			this.offX = x;
+			this.offY = y;
+		}
+	}
+
 	public class MMGridSquare
 	{
-		private List<string> tiles;
+		private List <MMTile> tiles;
 		private int roomID = 0;
 		private bool hasContainer = false; //for future use
 		private string container;
 
 		public MMGridSquare()
 		{
-			this.tiles = new List<string>();
+			this.tiles = new List<MMTile>();
+		}
+
+		public void AddTile(string tile, Int32 offsetX, Int32 offsetY)
+		{
+			//check for container here?
+			this.tiles.Add(new MMTile(tile, offsetX, offsetY));
 		}
 
 		public void AddTile(string tile)
 		{
 			//check for container here?
-			this.tiles.Add(tile);
+			this.AddTile(tile, 0, 0);
 		}
 
-		public List<string> GetTiles()
+		public List<MMTile> GetTiles()
 		{
 			return this.tiles;
 		}

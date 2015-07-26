@@ -20,6 +20,7 @@ namespace MapMapLib {
 		private Int32 offY;
 		private List<Int32> delayedSprites;
 		private bool debug = false;
+		private Single offsetX, offsetY;
 
 		public MMBinReader() {
 			// this.cellData = new MMCellData();
@@ -232,13 +233,14 @@ namespace MapMapLib {
 		/* }}} */
 
 		private void AddTile(String spriteID){/*{{{*/
-			this.currentGS.AddTile(spriteID);
+			this.currentGS.AddTile(spriteID, (Int32)this.offsetX, (Int32)this.offsetY);
 		}/*}}}*/
 		private void AddTile(Int32 spriteID){/*{{{*/
 			String s;
 			this.tileDefs.TryGetValue(spriteID, out s);
-			this.currentGS.AddTile(s);
+			this.currentGS.AddTile(s, (Int32)this.offsetX, (Int32)this.offsetY);
 		}/*}}}*/
+
 		private void AddDelayedSprites(int fromHere){/*{{{*/
 			for (int i = fromHere; i<this.delayedSprites.Count; i++){
 				this.AddTile(this.delayedSprites[i]);
@@ -406,7 +408,9 @@ namespace MapMapLib {
 		}/*}}}*/
 		private void ReadIsoDeadBody(){/*{{{*/
 			ReadIsoMovingObject();
-			ReadByte(); // wasZombie
+			if (ReadByte() == 1){ // wasZombie
+				Console.WriteLine("Reading dead body");
+			}
 			if (ReadByte() == 1){ // bServer
 				ReadInt16();
 			} else {
@@ -416,31 +420,31 @@ namespace MapMapLib {
 				ReadSingle();
 				ReadSingle();
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // torsosprite
+					this.AddTile(ReadString()); // legsprite
 				}
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // headsprite
-					ReadSingle();
-					ReadSingle();
-					ReadSingle();
-					ReadSingle();
-				}
-				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // bottomsprite
+					this.AddTile(ReadString()); // legsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 				}
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // shoesprite
+					this.AddTile(ReadString()); // legsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 				}
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // topsprite
+					this.AddTile(ReadString()); // legsprite
+					ReadSingle();
+					ReadSingle();
+					ReadSingle();
+					ReadSingle();
+				}
+				if (ReadByte() == 1){
+					this.AddTile(ReadString()); // legsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
@@ -448,7 +452,7 @@ namespace MapMapLib {
 				}
 				Int32 extraSprites = ReadInt32();
 				for (; extraSprites > 0; extraSprites--){
-					this.AddTile(ReadString()); // extrasprite
+					this.AddTile(ReadString()); // legsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
@@ -555,11 +559,12 @@ namespace MapMapLib {
 			ReadByte(); // activated
 		}/*}}}*/
 		private void ReadIsoMovingObject(){/*{{{*/
-			ReadSingle(); // offsetX
-			ReadSingle(); // offsetY
-			ReadSingle(); // X
-			ReadSingle(); //Y
-			ReadSingle(); // Z
+			this.offsetX = -ReadSingle(); // offsetX
+			this.offsetY = -ReadSingle(); // offsetY
+			Single X = ReadSingle(); // X
+			Single Y = ReadSingle(); // Y
+			Single Z = ReadSingle(); // Z
+			if (debug) Console.WriteLine("offX {0} offY {1} x {2} y {3} z {4}", offsetX, offsetY, X, Y, Z);
 			ReadInt32(); // directions
 			if (ReadByte() == 1){
 				ReadKahluaTable();
@@ -887,6 +892,7 @@ namespace MapMapLib {
 				return;
 			}
 			Int32 classID = ReadInt32();
+			this.offsetX = this.offsetY = 0;
 			if (debug) Console.WriteLine("Class ID: {0}", classID); // classID
 			switch (classID){
 				case Barbecue: ReadIsoBarbecue(); break;

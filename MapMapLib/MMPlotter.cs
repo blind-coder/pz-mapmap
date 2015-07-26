@@ -69,14 +69,16 @@ namespace MapMapLib
 
 									if (gs != null)
 									{
-										foreach (string tile in gs.GetTiles())
+										foreach (MMTile mmtile in gs.GetTiles())
 										{
+											String tile = mmtile.tile;
 											if (tile != null && this.textures.Textures.ContainsKey(tile))
 											{
-												this.textures.Textures[tile].Draw(gfx, drawx, drawy);
+												Console.WriteLine("Drawing {0} at {1} + {2} x {3} + {4}", tile, drawx, mmtile.offX, drawy, mmtile.offY);
+												this.textures.Textures[tile].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
 												drawCnt++;
-											 } else {
-												 Console.WriteLine("Unknown texture: {0}", tile);
+											} else {
+												Console.WriteLine("Unknown texture: {0}", tile);
 											}
 										}
 									}

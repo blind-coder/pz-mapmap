@@ -50,10 +50,10 @@ namespace MapMapLib
 									for (int y = 0; y < 900; y++)
 									{
 										MMGridSquare gs = mapdata.GetSquare(0, x, y);
-										List<string> tiles = gs.GetTiles();
+										List<MMTile> tiles = gs.GetTiles();
 										if (tiles.Count > 0 && tiles.Count < 3)
 										{
-											string id = tiles[0] + tiles[1];
+											string id = tiles[0].tile + tiles[1].tile;
 											if (this.simsCount.ContainsKey(id))
 												this.simsCount[id]++;
 											else
