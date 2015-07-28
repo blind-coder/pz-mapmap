@@ -232,8 +232,16 @@ namespace MapMapLib {
 		const  Int32  Zombie              =  -1612488122;
 		/* }}} */
 
+		private void AddTile(Int32 location, String spriteID){/*{{{*/
+			this.currentGS.AddTile(location, spriteID, (Int32)this.offsetX, (Int32)this.offsetY);
+		}/*}}}*/
 		private void AddTile(String spriteID){/*{{{*/
 			this.currentGS.AddTile(spriteID, (Int32)this.offsetX, (Int32)this.offsetY);
+		}/*}}}*/
+		private void AddTile(Int32 location, Int32 spriteID){/*{{{*/
+			String s;
+			this.tileDefs.TryGetValue(spriteID, out s);
+			this.currentGS.AddTile(location, s, (Int32)this.offsetX, (Int32)this.offsetY);
 		}/*}}}*/
 		private void AddTile(Int32 spriteID){/*{{{*/
 			String s;
@@ -409,42 +417,42 @@ namespace MapMapLib {
 		private void ReadIsoDeadBody(){/*{{{*/
 			ReadIsoMovingObject();
 			if (ReadByte() == 1){ // wasZombie
-				Console.WriteLine("Reading dead body");
+				if (debug) Console.WriteLine("Reading dead body");
 			}
 			if (ReadByte() == 1){ // bServer
 				ReadInt16();
 			} else {
-				this.AddTile(ReadString()); // legsprite
+				this.AddTile(MMGridSquare.BOTTOM, ReadString()); // legsprite
 				ReadSingle();
 				ReadSingle();
 				ReadSingle();
 				ReadSingle();
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // legsprite
+					this.AddTile(MMGridSquare.BOTTOM, ReadString()); // legsprite
 				}
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // legsprite
-					ReadSingle();
-					ReadSingle();
-					ReadSingle();
-					ReadSingle();
-				}
-				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // legsprite
+					this.AddTile(MMGridSquare.BOTTOM, ReadString()); // legsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 				}
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // legsprite
+					this.AddTile(MMGridSquare.BOTTOM, ReadString()); // legsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
 				}
 				if (ReadByte() == 1){
-					this.AddTile(ReadString()); // legsprite
+					this.AddTile(MMGridSquare.BOTTOM, ReadString()); // legsprite
+					ReadSingle();
+					ReadSingle();
+					ReadSingle();
+					ReadSingle();
+				}
+				if (ReadByte() == 1){
+					this.AddTile(MMGridSquare.BOTTOM, ReadString()); // legsprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
@@ -452,7 +460,7 @@ namespace MapMapLib {
 				}
 				Int32 extraSprites = ReadInt32();
 				for (; extraSprites > 0; extraSprites--){
-					this.AddTile(ReadString()); // legsprite
+					this.AddTile(MMGridSquare.BOTTOM, ReadString()); // extrasprite
 					ReadSingle();
 					ReadSingle();
 					ReadSingle();
