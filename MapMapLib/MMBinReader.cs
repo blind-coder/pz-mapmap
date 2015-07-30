@@ -567,8 +567,8 @@ namespace MapMapLib {
 			ReadByte(); // activated
 		}/*}}}*/
 		private void ReadIsoMovingObject(){/*{{{*/
-			this.offsetX = -ReadSingle(); // offsetX
-			this.offsetY = -ReadSingle(); // offsetY
+			this.offsetX = -ReadSingle(); // + 8 + 29 + 8 + (85 - 72) / 2; // offsetX TODO IsoDeadBody:897
+			this.offsetY = -ReadSingle(); // + 60 + 57 + 60 + (64 - 64) / 2; // offsetY
 			Single X = ReadSingle(); // X
 			Single Y = ReadSingle(); // Y
 			Single Z = ReadSingle(); // Z

@@ -72,8 +72,10 @@ namespace MapMapLib
 											foreach (MMTile mmtile in gs.GetTiles(i)){
 												String tile = mmtile.tile;
 												if (tile != null && this.textures.Textures.ContainsKey(tile)){
-													Console.WriteLine("Drawing {0} at {1} + {2} x {3} + {4}", tile, drawx, mmtile.offX, drawy, mmtile.offY);
 													this.textures.Textures[tile].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
+													if (mmtile.offX + mmtile.offY != 0){
+														Console.WriteLine("Drawing {0} at {1}+{2}x{3}+{4}", tile, drawx, mmtile.offX, drawy, mmtile.offY);
+													}
 													drawCnt++;
 												} else {
 													Console.WriteLine("Unknown texture: {0}", tile);

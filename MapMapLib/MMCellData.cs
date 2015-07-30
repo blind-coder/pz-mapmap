@@ -64,7 +64,7 @@ namespace MapMapLib
 
 		public void AddTile(Int32 which, string tile, Int32 offsetX, Int32 offsetY){
 			//check for container here?
-			if (offsetX > 32 || offsetY > 16){
+			if (offsetX > 64 || offsetY > 32){
 				// elsewhere[which].Add(new MMTile(tile, offsetX, offsetY, this.x, this.y, this.z)); // TODO XXX FIXME
 				return;
 			}
@@ -100,17 +100,18 @@ namespace MapMapLib
 		}
 
 		public List<MMTile> GetTiles(Int32 which) {
-			/* TODO XXX FIXME
 			foreach (MMTile mt in elsewhere[which]){
-				Int32 dx = mt.x;// + mt.offX / 32;
-				Int32 dy = mt.y;// + mt.offY / 16;
-				dx += (mt.offY + (mt.offX / 2)) / 32;
-				dy += (mt.offY - (mt.offX / 2)) / 32;
-				if (dx == this.x && dy == this.y && mt.z == this.z){
+				Int32 dx = (mt.x - mt.y) * 32;
+				Int32 dy = (mt.x + mt.y) * 16;
+				dx += mt.offX;
+				dy += mt.offY;
+
+				Int32 tx = (dx + 2 * dy) / 64;
+				Int32 ty = (dx - 2 * dy) / -64;
+				if (tx == this.x && ty == this.y && mt.z == this.z){
 					this.AddTile(which, mt.tile, mt.offX % 64, mt.offY % 32);
 				}
 			}
-			*/
 			switch (which){
 				case TOP:
 					return this.top;
