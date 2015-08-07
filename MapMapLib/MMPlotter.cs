@@ -77,8 +77,8 @@ namespace MapMapLib
 														Console.WriteLine("Drawing {0} at {1}+{2}x{3}+{4}", tile, drawx, mmtile.offX, drawy, mmtile.offY);
 													}
 													drawCnt++;
-												} else {
-													Console.WriteLine("Unknown texture: {0}", tile);
+												// } else {
+													// Console.WriteLine("Unknown texture: {0}", tile);
 												}
 											}
 										}
