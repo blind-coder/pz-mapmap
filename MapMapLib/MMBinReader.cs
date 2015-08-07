@@ -1069,8 +1069,8 @@ namespace MapMapLib {
 		private void ReadPack() {
 			// MMGridSquare gs;
 			Int32 version = ReadInt32();
-			if (version != 68 && version != 67){
-				if (debug) Console.WriteLine("Cannot handle map version {0}!", version);
+			if (version != 69 && version != 68 && version != 67){
+				Console.WriteLine("Cannot handle map version {0}!", version);
 				return;
 			}
 			ReadInt32(); // size of map data
