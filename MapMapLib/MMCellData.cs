@@ -121,7 +121,7 @@ namespace MapMapLib
 				default:
 					return this.bottom;
 			}
-			return null;
+			// return null;
 		}
 
 		public void SetRoomID(int roomid)
