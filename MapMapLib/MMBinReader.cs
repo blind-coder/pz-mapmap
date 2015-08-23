@@ -263,11 +263,20 @@ namespace MapMapLib {
 				this.delayedSprites.Add(spriteID);
 			}
 			string spritename = ReadString(); // spriteName
+			if (spriteID == 20000000){
+				Int32 newID = this.tileDefs.FirstOrDefault(x => x.Value == spritename).Key;
+				if (addSprite){
+					this.AddTile(newID);
+				} else {
+					this.delayedSprites.Add(newID);
+				}
+			}
 			if (debug) Console.WriteLine("Object sprite: {0} (ID: {1})", spritename, spriteID);
 			Byte animSprites = ReadByte(); // numAnimSprites;
 			if (debug) Console.WriteLine("Found {0} animSprites", animSprites);
-			for (; animSprites > 0; animSprites--){ // we skip these
+			for (; animSprites > 0; animSprites--){
 				Int32 animSpriteID = ReadInt32(); // sprite.ID // wtf
+				if (debug) Console.WriteLine("AnimSpriteID: {0}", animSpriteID);
 				if (addSprite){
 					this.AddTile(animSpriteID);
 				} else {
@@ -285,7 +294,8 @@ namespace MapMapLib {
 				ReadByte();
 			}
 			if (ReadByte() != 0){
-				ReadString(); // Object name
+				String name = ReadString(); // Object name
+				if (debug) Console.WriteLine("{0}", name);
 			}
 			if (ReadByte() != 0){
 				if (debug) Console.WriteLine("Object has container");
