@@ -1079,7 +1079,7 @@ namespace MapMapLib {
 		private void ReadPack() {
 			// MMGridSquare gs;
 			Int32 version = ReadInt32();
-			if (version != 69 && version != 68 && version != 67){
+			if (version < 67 || version > 71){
 				Console.WriteLine("Cannot handle map version {0}!", version);
 				return;
 			}
