@@ -21,6 +21,7 @@ namespace MapMapLib {
 		private List<Int32> delayedSprites;
 		private bool debug = false;
 		private Single offsetX, offsetY;
+		private Int32 worldVersion = -1;
 
 		public MMBinReader() {
 			// this.cellData = new MMCellData();
@@ -105,8 +106,13 @@ namespace MapMapLib {
 			Int32 numItems = ReadInt16();
 			if (debug) Console.WriteLine("Contains {0} items", numItems);
 			for (; numItems > 0; numItems--){/*{{{*/
-				Int16 dataLen = ReadInt16(); // dataLen
-				binReader.ReadBytes(dataLen);
+				if (worldVersion <= 71){
+					Int16 dataLen = ReadInt16(); // dataLen
+					binReader.ReadBytes(dataLen);
+				} else {
+					Int32 dataLen = ReadInt32(); // dataLen
+					binReader.ReadBytes(dataLen);
+				}
 				/*
 				ReadString(); // Base.Axe
 
@@ -855,14 +861,19 @@ namespace MapMapLib {
 			ReadSingle(); // offX ???
 			ReadSingle(); // offY ???
 
-			Int16 len = ReadInt16(); // dataLen
+			if (worldVersion <= 71){
+				Int16 len = ReadInt16(); // dataLen
+				binReader.ReadBytes(len);
+			} else {
+				Int32 len = ReadInt32(); // dataLen
+				binReader.ReadBytes(len);
+			}
 			//String type = ReadString(); // object Type
 
 			//len -= (Int16)type.Length;
 			//for (; len > 0; len--){
 				//ReadByte();
 			//}
-			binReader.ReadBytes(len);
 		}/*}}}*/
 		private void ReadXP(){/*{{{*/
 			Int32 numTraits = ReadInt32();
@@ -1078,9 +1089,9 @@ namespace MapMapLib {
 
 		private void ReadPack() {
 			// MMGridSquare gs;
-			Int32 version = ReadInt32();
-			if (version < 67 || version > 71){
-				Console.WriteLine("Cannot handle map version {0}!", version);
+			worldVersion = ReadInt32();
+			if (worldVersion < 67 || worldVersion > 72){
+				Console.WriteLine("Cannot handle worldVersion {0}!", worldVersion);
 				return;
 			}
 			ReadInt32(); // size of map data
