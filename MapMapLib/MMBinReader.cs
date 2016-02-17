@@ -19,7 +19,7 @@ namespace MapMapLib {
 		private Int32 offX;
 		private Int32 offY;
 		private List<Int32> delayedSprites;
-		private bool debug = true;
+		private bool debug = false;
 		private Single offsetX, offsetY;
 		private Int32 worldVersion = -1;
 
@@ -1048,7 +1048,7 @@ namespace MapMapLib {
 				case ZombieGiblets: ReadIsoMovingObject(); break;
 				case Zombie: ReadIsoZombie(); break;
 				case Television: ReadIsoTelevision(); break;
-				default: Console.WriteLine("UNHANDLED OBJECT: {0}", classID); ReadGenericIsoObject(true);
+				default: if (debug) Console.WriteLine("UNHANDLED OBJECT: {0}", classID); ReadGenericIsoObject(true);
 					break;
 			}
 
