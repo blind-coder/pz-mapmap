@@ -152,6 +152,9 @@ namespace MapMapLib {
 				*/
 			}/*}}}*/
 			ReadByte(); // HasBeenLooted
+			if (worldVersion >= 84){
+				ReadInt32(); // capacity
+			}
 		}/*}}}*/
 		private void ReadKahluaTable2(Byte b){/*{{{*/
 			if (b == 0){
