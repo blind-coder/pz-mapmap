@@ -16,7 +16,7 @@
 # -divider 3 splits into 3x3 images
 # etc
 
-# -dolayers 0|1 specifies if all layers are put into a single image. 0: yes 1: no
+# -dolayers true|false specifies if layers are split across multiple PNG files. true: yes - false: no
 
 # Example call using Muldraugh and a Savegame, showing only cell 36x31 into the directory output/ with 2x2 images per cell putting all layers into one image:
 mono MapMap.exe \
@@ -28,5 +28,5 @@ mono MapMap.exe \
 	-minx 36 -maxx 36 \
 	-miny 31 -maxy 31 \
 	-output output/ \
-	-dolayers 0 \
+	-dolayers false \
 	-divider 2
