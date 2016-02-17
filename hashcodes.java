@@ -25,7 +25,7 @@ class main {
 		System.out.println("const Int32 Window = " + "Window".hashCode() + ";");
 		System.out.println("const Int32 WoodenWall = " + "WoodenWall".hashCode() + ";");
 		System.out.println("const Int32 WorldInventoryItem = " + "WorldInventoryItem".hashCode() + ";");
-		System.out.println("const Int32 ZombieGiblets = " + "ZombieGiblets".hashCode() + ";");
 		System.out.println("const Int32 Zombie = " + "Zombie".hashCode() + ";");
+		System.out.println("const Int32 Television = " + "Television".hashCode() + ";");
 	}
 }
