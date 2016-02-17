@@ -24,7 +24,8 @@ namespace MapMapLib {
 			if (File.Exists(datafile)) {
 				Console.WriteLine("Reading tiledef {0}", datafile);
 				string[] f;
-				f = datafile.Split(new Char[] {'/'});
+				//f = datafile.Split(new Char[] {'/'});
+				f = datafile.Split(new Char[] {Path.DirectorySeparatorChar});
 				f = f[f.Length-1].Split(new Char[] {'_'});
 
 				this.binReader = new BinaryReader(File.Open(datafile, FileMode.Open));
