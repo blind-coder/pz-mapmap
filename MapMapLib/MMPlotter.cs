@@ -67,16 +67,19 @@ namespace MapMapLib
 
 									gs = cellData.GetSquare(x+(subx*this.subWH), y+(suby*this.subWH), z);
 
-									if (gs != null)
-									{
-										foreach (string tile in gs.GetTiles())
-										{
-											if (tile != null && this.textures.Textures.ContainsKey(tile))
-											{
-												this.textures.Textures[tile].Draw(gfx, drawx, drawy);
-												drawCnt++;
-											 } else {
-												 Console.WriteLine("Unknown texture: {0}", tile);
+									if (gs != null){
+										for (Int32 i = MMGridSquare.TOP; i <= MMGridSquare.BOTTOM; i++){
+											foreach (MMTile mmtile in gs.GetTiles(i)){
+												String tile = mmtile.tile;
+												if (tile != null && this.textures.Textures.ContainsKey(tile)){
+													this.textures.Textures[tile].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
+													if (mmtile.offX + mmtile.offY != 0){
+														Console.WriteLine("Drawing {0} at {1}+{2}x{3}+{4}", tile, drawx, mmtile.offX, drawy, mmtile.offY);
+													}
+													drawCnt++;
+												// } else {
+													// Console.WriteLine("Unknown texture: {0}", tile);
+												}
 											}
 										}
 									}

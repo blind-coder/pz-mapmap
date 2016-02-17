@@ -172,6 +172,9 @@ namespace MapMap
 							break;
 						case "-unpack":
 							this.unpack = Convert.ToBoolean(args[id + 1]);
+							if (this.unpack){
+								//
+							}
 							break;
 						case "-divider":
 							int div = Convert.ToInt32(args[id + 1]);

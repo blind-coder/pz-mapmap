@@ -98,7 +98,7 @@ namespace MapMapLib
 		private void loadFromPackFile(BinaryReader binReader, int sn)/*{{{*/
 		{
 			List<MMTextureData> TempSubTextureInfo = new List<MMTextureData>();
-			string name = readString(binReader);
+			readString(binReader);
 			int numEntries = binReader.ReadInt32();
 			/* bool mask = */ binReader.ReadInt32()/* != 0*/;
 			for (int n = 0; n < numEntries; n++)

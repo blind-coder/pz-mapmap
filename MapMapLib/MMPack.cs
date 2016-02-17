@@ -50,16 +50,16 @@ namespace MapMapLib
 									for (int y = 0; y < 900; y++)
 									{
 										MMGridSquare gs = mapdata.GetSquare(0, x, y);
-										List<string> tiles = gs.GetTiles();
-										if (tiles.Count > 0 && tiles.Count < 3)
-										{
-											string id = tiles[0] + tiles[1];
-											if (this.simsCount.ContainsKey(id))
-												this.simsCount[id]++;
-											else
-											{
-												this.simsCount.Add(id, 1);
-												this.sims.Add(id, gs);
+										for (Int32 i = MMGridSquare.TOP; i <= MMGridSquare.BOTTOM; i++){
+											List<MMTile> tiles = gs.GetTiles(i);
+											if (tiles.Count > 0 && tiles.Count < 3){
+												string id = tiles[0].tile + tiles[1].tile;
+												if (this.simsCount.ContainsKey(id)){
+													this.simsCount[id]++;
+												} else {
+													this.simsCount.Add(id, 1);
+													this.sims.Add(id, gs);
+												}
 											}
 										}
 									}
