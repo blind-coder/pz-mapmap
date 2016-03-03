@@ -102,7 +102,8 @@ namespace MapMapLib {
 		}/*}}}*/
 
 		private void ReadContainer(){/*{{{*/
-			ReadString(); // type
+			String type = ReadString(); // type
+			if (debug) Console.WriteLine("Container type: {0}", type);
 			ReadByte(); // explored
 			Int32 numItems = ReadInt16();
 			if (debug) Console.WriteLine("Contains {0} items", numItems);
@@ -315,8 +316,9 @@ namespace MapMapLib {
 				String name = ReadString(); // Object name
 				if (debug) Console.WriteLine("Object name: {0}", name);
 			}
-			if (ReadByte() != 0){
-				if (debug) Console.WriteLine("Object has container");
+			Int32 numContainers = ReadByte();
+			if (debug) Console.WriteLine("Object {0} container(s)", numContainers);
+			for (; numContainers > 0; numContainers--){
 				ReadContainer();
 			}
 			if (ReadByte() == 1){
@@ -974,7 +976,7 @@ namespace MapMapLib {
 			ReadInt32(); // time since seen flesh
 			ReadInt32(); // fake dead
 		}/*}}}*/
-		private void ReadIsoTelevision(){/*{{{*/
+		private void ReadIsoWaveSignal(){/*{{{*/
 			// really IsoWaveSignal
 			ReadGenericIsoObject(true);
 			if (ReadByte() == 1){
@@ -1039,7 +1041,6 @@ namespace MapMapLib {
 				case MolotovCocktail: ReadGenericIsoObject(true); break;
 				case Player: ReadIsoPlayer(false); break;
 				case Pushable: ReadIsoPushable(false); break;
-				case Radio: ReadGenericIsoObject(true); break;
 				case Stove: ReadIsoStove(); break;
 				case Survivor: ReadIsoSurvivor(); break;
 				case Thumpable: ReadIsoThumpable(); break;
@@ -1050,7 +1051,8 @@ namespace MapMapLib {
 				case WorldInventoryItem: ReadIsoWorldInventoryItem(); break;
 				case ZombieGiblets: ReadIsoMovingObject(); break;
 				case Zombie: ReadIsoZombie(); break;
-				case Television: ReadIsoTelevision(); break;
+				case Television: ReadIsoWaveSignal(); break;
+				case Radio: ReadIsoWaveSignal(); break;
 				default: if (debug) Console.WriteLine("UNHANDLED OBJECT: {0}", classID); ReadGenericIsoObject(true);
 					break;
 			}
@@ -1192,7 +1194,7 @@ namespace MapMapLib {
 		private void ReadPack() {
 			// MMGridSquare gs;
 			worldVersion = ReadInt32();
-			if (worldVersion < 67 || worldVersion > 84){
+			if (worldVersion < 67 || worldVersion > 85){
 				Console.WriteLine("Cannot handle worldVersion {0}!", worldVersion);
 				return;
 			}
