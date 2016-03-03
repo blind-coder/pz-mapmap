@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # The directory given as a parameter to -tiledef must contain the following files from PZ:
-# 0_tiledefinitions.tiles  1_newtiledefinitions.tiles  2_tiledefinitions_erosion.tiles
+# 0_tiledefinitions.tiles  1_newtiledefinitions.tiles  2_tiledefinitions_erosion.tiles 3_tiledefinitions_apcom.tiles
 
 # -gfxsource points to Erosion.pack and Tiles.pack, specified multiple times
 
