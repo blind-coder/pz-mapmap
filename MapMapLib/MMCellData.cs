@@ -34,17 +34,17 @@ namespace MapMapLib
 
 	public class MMGridSquare
 	{
-		private static List <MMTile>[] elsewhere;
-		private List <MMTile> top, middle, bottom;
+		private List <MMTile> top, middle, bottom, floor;
 		private int roomID = 0;
 		private bool hasContainer = false; //for future use
 		private string container;
 		private Int32 x;
 		private Int32 y;
 		private Int32 z;
-		public const Int32 TOP = 0;
-		public const Int32 MIDDLE = 1;
-		public const Int32 BOTTOM = 2;
+		public const Int32 FLOOR = 0;
+		public const Int32 BOTTOM = 1;
+		public const Int32 MIDDLE = 2;
+		public const Int32 TOP = 3;
 
 		public MMGridSquare(Int32 x, Int32 y, Int32 z)
 		{
@@ -54,20 +54,10 @@ namespace MapMapLib
 			this.top = new List<MMTile>();
 			this.bottom = new List<MMTile>();
 			this.middle = new List<MMTile>();
-			if (elsewhere == null){
-				elsewhere = new List <MMTile>[3]; 
-				elsewhere[MMGridSquare.TOP] = new List <MMTile>();
-				elsewhere[MMGridSquare.MIDDLE] = new List <MMTile>();
-				elsewhere[MMGridSquare.BOTTOM] = new List <MMTile>();
-			}
+			this.floor = new List<MMTile>();
 		}
 
 		public void AddTile(Int32 which, string tile, Int32 offsetX, Int32 offsetY){
-			//check for container here?
-			if (offsetX > 64 || offsetY > 32){
-				// elsewhere[which].Add(new MMTile(tile, offsetX, offsetY, this.x, this.y, this.z)); // TODO XXX FIXME
-				return;
-			}
 			switch (which){
 				case TOP:
 					this.top.Add(new MMTile(tile, offsetX, offsetY, this.x, this.y, this.z));
@@ -76,8 +66,11 @@ namespace MapMapLib
 					this.middle.Add(new MMTile(tile, offsetX, offsetY, this.x, this.y, this.z));
 					break;
 				case BOTTOM:
-				default:
 					this.bottom.Add(new MMTile(tile, offsetX, offsetY, this.x, this.y, this.z));
+					break;
+				case FLOOR:
+				default:
+					this.floor.Add(new MMTile(tile, offsetX, offsetY, this.x, this.y, this.z));
 					break;
 			};
 		}
@@ -85,9 +78,13 @@ namespace MapMapLib
 			if (tile == null)
 				return;
 			if (tile.Contains("wall") ||
-					tile.Contains("carpentry_02_80") || tile.Contains("carpentry_02_81") // Log walls
+					tile.Contains("carpentry_02_80") || tile.Contains("carpentry_02_81") | tile.Contains("carpentry_02_82") | tile.Contains("carpentry_02_83") // Log walls
 					){
-				this.AddTile(TOP, tile, offsetX, offsetY);
+				this.AddTile(BOTTOM, tile, offsetX, offsetY);
+				return;
+			}
+			if (tile.Contains("floor") || tile.Contains("blends")){
+				this.AddTile(FLOOR, tile, offsetX, offsetY);
 				return;
 			}
 			this.AddTile(MIDDLE, tile, offsetX, offsetY);
@@ -100,26 +97,16 @@ namespace MapMapLib
 		}
 
 		public List<MMTile> GetTiles(Int32 which) {
-			foreach (MMTile mt in elsewhere[which]){
-				Int32 dx = (mt.x - mt.y) * 32;
-				Int32 dy = (mt.x + mt.y) * 16;
-				dx += mt.offX;
-				dy += mt.offY;
-
-				Int32 tx = (dx + 2 * dy) / 64;
-				Int32 ty = (dx - 2 * dy) / -64;
-				if (tx == this.x && ty == this.y && mt.z == this.z){
-					this.AddTile(which, mt.tile, mt.offX % 64, mt.offY % 32);
-				}
-			}
 			switch (which){
 				case TOP:
 					return this.top;
 				case MIDDLE:
 					return this.middle;
 				case BOTTOM:
-				default:
 					return this.bottom;
+				case FLOOR:
+				default:
+					return this.floor;
 			}
 			// return null;
 		}
@@ -156,6 +143,7 @@ namespace MapMapLib
 			this.top.Clear();
 			this.middle.Clear();
 			this.bottom.Clear();
+			this.floor.Clear();
 		}
 	}
 

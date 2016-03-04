@@ -26,17 +26,17 @@ namespace MapMapLib
 		{
 			this.subDiv = divider;
 			this.subWH = (300 / this.subDiv);
-			this.startX = ((640 * (30 / this.subDiv)) / 2) - 32;
+			this.startX = ((1280 * (30 / this.subDiv)) / 2) - 64;
 			this.dolayers = dolayers;
 			if (this.dolayers == true)
 			{
-				this.subCell = new Bitmap(640 * (30 / divider), (320 * (30 / divider)) + 96, textures.format);
+				this.subCell = new Bitmap(1280 * (30 / divider), (640 * (30 / divider)) + 192, textures.format);
 				this.startY = 0;
 			}
 			else
 			{
-				this.subCell = new Bitmap(640 * (30 / divider), (320 * (30 / divider)) + (96 * 8), textures.format);
-				this.startY = 96 * 7;
+				this.subCell = new Bitmap(1280 * (30 / divider), (640 * (30 / divider)) + (192 * 8), textures.format);
+				this.startY = 192 * 7;
 			}
 			this.textures = textures;
 		}
@@ -59,18 +59,21 @@ namespace MapMapLib
 							{
 								for (int y = 0; y < this.subWH; y++)
 								{
-									drawx = this.startX + (x - y) * 32;
+									Console.WriteLine("{0}+{1}x{2}+{3}", subx, x, suby, y);
+									drawx = this.startX + (x - y) * 64;
 									if (this.dolayers == true)
-										drawy = this.startY + (x + y) * 16;
+										drawy = this.startY + (x + y) * 32;
 									else
-										drawy = (this.startY + (x + y) * 16) - (96 * z);
+										drawy = (this.startY + (x + y) * 32) - (192 * z);
 
 									gs = cellData.GetSquare(x+(subx*this.subWH), y+(suby*this.subWH), z);
 
 									if (gs != null){
-										for (Int32 i = MMGridSquare.TOP; i <= MMGridSquare.BOTTOM; i++){
+										//for (Int32 i = MMGridSquare.TOP; i <= MMGridSquare.BOTTOM; i++){
+										for (Int32 i = MMGridSquare.FLOOR; i <= MMGridSquare.TOP; i++){
 											foreach (MMTile mmtile in gs.GetTiles(i)){
 												String tile = mmtile.tile;
+												Console.WriteLine("Level {0} Tile {1}", i, tile);
 												if (tile != null && this.textures.Textures.ContainsKey(tile)){
 													this.textures.Textures[tile].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
 													if (mmtile.offX + mmtile.offY != 0){

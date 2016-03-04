@@ -34,6 +34,7 @@ namespace MapMapLib
 			this.offy = offy;
 			this.ow = ow;
 			this.oh = oh;
+			// Console.WriteLine("{0}: w: {1} h: {2} ow: {3} oh: {4}", name, w, h, ow, oh);
 			this.name = name;
 		}
 
@@ -42,7 +43,7 @@ namespace MapMapLib
 			Rectangle cloneRect = new Rectangle(this.x, this.y, this.w, this.h);
 			System.Drawing.Imaging.PixelFormat format = source.PixelFormat;
 			this.data = source.Clone(cloneRect, format);
-			//this.data.Save("foo/"+this.name+".png", System.Drawing.Imaging.ImageFormat.Png);
+			// this.data.Save("foo/"+this.name+".png", System.Drawing.Imaging.ImageFormat.Png);
 		}
 
 		public void Draw(Graphics target, int bx, int by)
