@@ -59,7 +59,6 @@ namespace MapMapLib
 							{
 								for (int y = 0; y < this.subWH; y++)
 								{
-									Console.WriteLine("{0}+{1}x{2}+{3}", subx, x, suby, y);
 									drawx = this.startX + (x - y) * 64;
 									if (this.dolayers == true)
 										drawy = this.startY + (x + y) * 32;
@@ -73,7 +72,6 @@ namespace MapMapLib
 										for (Int32 i = MMGridSquare.FLOOR; i <= MMGridSquare.TOP; i++){
 											foreach (MMTile mmtile in gs.GetTiles(i)){
 												String tile = mmtile.tile;
-												Console.WriteLine("Level {0} Tile {1}", i, tile);
 												if (tile != null && this.textures.Textures.ContainsKey(tile)){
 													this.textures.Textures[tile].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
 													if (mmtile.offX + mmtile.offY != 0){
