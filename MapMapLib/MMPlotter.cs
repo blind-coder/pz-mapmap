@@ -26,16 +26,16 @@ namespace MapMapLib
 		{
 			this.subDiv = divider;
 			this.subWH = (300 / this.subDiv);
-			this.startX = ((1280 * (30 / this.subDiv)) / 2) - 64;
+			this.startX = (1280 * 30 / this.subDiv / 2) - 64;
 			this.dolayers = dolayers;
 			if (this.dolayers == true)
 			{
-				this.subCell = new Bitmap(1280 * (30 / divider), (640 * (30 / divider)) + 192, textures.format);
+				this.subCell = new Bitmap(1280 * 30 / divider, (640 * 30 / divider) + 192, textures.format);
 				this.startY = 0;
 			}
 			else
 			{
-				this.subCell = new Bitmap(1280 * (30 / divider), (640 * (30 / divider)) + (192 * 8), textures.format);
+				this.subCell = new Bitmap(1280 * 30 / divider, (640 * 30 / divider) + (192 * 8), textures.format);
 				this.startY = 192 * 7;
 			}
 			this.textures = textures;
