@@ -77,7 +77,7 @@ namespace MapMapLib
 		public void AddTile(string tile, Int32 offsetX, Int32 offsetY) {
 			if (tile == null)
 				return;
-			if (tile.Contains("wall") ||
+			if ((tile.Contains("wall") && !tile.Contains("graffiti")) ||
 					tile.Contains("carpentry_02_80") || tile.Contains("carpentry_02_81") | tile.Contains("carpentry_02_82") | tile.Contains("carpentry_02_83") // Log walls
 					){
 				this.AddTile(BOTTOM, tile, offsetX, offsetY);
