@@ -28,6 +28,7 @@ namespace MapMap
 		private int minY = -99999;
 		private int maxY = 99999;
 		private int divider = 3;
+		private bool bigtree = false;
 
 		public Main()
 		{
@@ -71,7 +72,7 @@ namespace MapMap
 		{
 			MMCellReader cellReader = new MMCellReader();
 			MMBinReader binReader = new MMBinReader();
-			MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers);
+			MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers, this.bigtree);
 			foreach (string mapPath in this.mapsources) {
 				if (Directory.Exists(mapPath)) {
 					string[] packs = Directory.GetFiles(mapPath, "*.lotpack");
@@ -184,6 +185,9 @@ namespace MapMap
 								if (d % 1 == 0)
 									this.divider = div;
 							}
+							break;
+						case "-bigtree":
+							this.bigtree = true;
 							break;
 						case "-minx":
 							this.minX = Convert.ToInt32(args[id + 1]);

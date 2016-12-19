@@ -19,6 +19,7 @@ namespace MapMapLib
 		private int startX;
 		private int startY;
 		private bool dolayers;
+		private bool bigtree;
 		private Bitmap subCell;
 		private MMTextures textures;
 		private Dictionary<String, Dictionary<String, List<String>>> collages;
@@ -26,7 +27,7 @@ namespace MapMapLib
 		private BushInit[] bush;
 		private PlantInit[] plant;
 
-		public MMPlotter(int divider, MMTextures textures, bool dolayers)
+		public MMPlotter(int divider, MMTextures textures, bool dolayers, bool bigtree)
 		{
 			Dictionary<String, List<String>> collageCategory;
 			List<String> collageSprites;
@@ -171,6 +172,120 @@ namespace MapMapLib
 			collageCategory.Add("American Linden Large", collageSprites);
 			/* }}} */
 			this.collages.Add("vegetation_trees", collageCategory);
+			this.collages.Add("jumbo_tree", collageCategory);
+/* {{{ err... nope
+e_americanhollyJUMBO_1_0
+e_americanhollyJUMBO_1_1
+e_americanhollyJUMBO_1_2
+e_americanhollyJUMBO_1_3
+e_americanhollyJUMBO_1_4
+e_americanlindenJUMBO_1_0
+e_americanlindenJUMBO_1_1
+e_americanlindenJUMBO_1_10
+e_americanlindenJUMBO_1_11
+e_americanlindenJUMBO_1_2
+e_americanlindenJUMBO_1_3
+e_americanlindenJUMBO_1_4
+e_americanlindenJUMBO_1_5
+e_americanlindenJUMBO_1_6
+e_americanlindenJUMBO_1_7
+e_americanlindenJUMBO_1_8
+e_americanlindenJUMBO_1_9
+e_canadianhemlockJUMBO_1_0
+e_canadianhemlockJUMBO_1_1
+e_canadianhemlockJUMBO_1_2
+e_canadianhemlockJUMBO_1_3
+e_canadianhemlockJUMBO_1_4
+e_carolinasilverbellJUMBO_1_0
+e_carolinasilverbellJUMBO_1_1
+e_carolinasilverbellJUMBO_1_10
+e_carolinasilverbellJUMBO_1_11
+e_carolinasilverbellJUMBO_1_2
+e_carolinasilverbellJUMBO_1_3
+e_carolinasilverbellJUMBO_1_4
+e_carolinasilverbellJUMBO_1_5
+e_carolinasilverbellJUMBO_1_6
+e_carolinasilverbellJUMBO_1_7
+e_carolinasilverbellJUMBO_1_8
+e_carolinasilverbellJUMBO_1_9
+e_cockspurhawthornJUMBO_1_0
+e_cockspurhawthornJUMBO_1_1
+e_cockspurhawthornJUMBO_1_10
+e_cockspurhawthornJUMBO_1_11
+e_cockspurhawthornJUMBO_1_2
+e_cockspurhawthornJUMBO_1_3
+e_cockspurhawthornJUMBO_1_4
+e_cockspurhawthornJUMBO_1_5
+e_cockspurhawthornJUMBO_1_6
+e_cockspurhawthornJUMBO_1_7
+e_cockspurhawthornJUMBO_1_8
+e_cockspurhawthornJUMBO_1_9
+e_dogwoodJUMBO_1_0
+e_dogwoodJUMBO_1_1
+e_dogwoodJUMBO_1_10
+e_dogwoodJUMBO_1_11
+e_dogwoodJUMBO_1_2
+e_dogwoodJUMBO_1_3
+e_dogwoodJUMBO_1_4
+e_dogwoodJUMBO_1_5
+e_dogwoodJUMBO_1_6
+e_dogwoodJUMBO_1_7
+e_dogwoodJUMBO_1_8
+e_dogwoodJUMBO_1_9
+e_easternredbudJUMBO_1_0
+e_easternredbudJUMBO_1_1
+e_easternredbudJUMBO_1_10
+e_easternredbudJUMBO_1_11
+e_easternredbudJUMBO_1_2
+e_easternredbudJUMBO_1_3
+e_easternredbudJUMBO_1_4
+e_easternredbudJUMBO_1_5
+e_easternredbudJUMBO_1_6
+e_easternredbudJUMBO_1_7
+e_easternredbudJUMBO_1_8
+e_easternredbudJUMBO_1_9
+e_redmapleJUMBO_1_0
+e_redmapleJUMBO_1_1
+e_redmapleJUMBO_1_10
+e_redmapleJUMBO_1_11
+e_redmapleJUMBO_1_2
+e_redmapleJUMBO_1_3
+e_redmapleJUMBO_1_4
+e_redmapleJUMBO_1_5
+e_redmapleJUMBO_1_6
+e_redmapleJUMBO_1_7
+e_redmapleJUMBO_1_8
+e_redmapleJUMBO_1_9
+e_riverbirchJUMBO_1_0
+e_riverbirchJUMBO_1_1
+e_riverbirchJUMBO_1_10
+e_riverbirchJUMBO_1_11
+e_riverbirchJUMBO_1_2
+e_riverbirchJUMBO_1_3
+e_riverbirchJUMBO_1_4
+e_riverbirchJUMBO_1_5
+e_riverbirchJUMBO_1_6
+e_riverbirchJUMBO_1_7
+e_riverbirchJUMBO_1_8
+e_riverbirchJUMBO_1_9
+e_virginiapineJUMBO_1_0
+e_virginiapineJUMBO_1_1
+e_virginiapineJUMBO_1_2
+e_virginiapineJUMBO_1_3
+e_yellowwoodJUMBO_1_0
+e_yellowwoodJUMBO_1_1
+e_yellowwoodJUMBO_1_10
+e_yellowwoodJUMBO_1_11
+e_yellowwoodJUMBO_1_2
+e_yellowwoodJUMBO_1_3
+e_yellowwoodJUMBO_1_4
+e_yellowwoodJUMBO_1_5
+e_yellowwoodJUMBO_1_6
+e_yellowwoodJUMBO_1_7
+e_yellowwoodJUMBO_1_8
+e_yellowwoodJUMBO_1_9
+}}} */
+
 			/* {{{ Bushes */
 			collageCategory = new Dictionary<String, List<String>>();
 
@@ -241,6 +356,7 @@ namespace MapMapLib
 			this.subWH = (300 / this.subDiv);
 			this.startX = (1280 * 30 / this.subDiv / 2) - 64;
 			this.dolayers = dolayers;
+			this.bigtree = bigtree;
 			if (this.dolayers == true)
 			{
 				this.subCell = new Bitmap(1280 * 30 / divider, (640 * 30 / divider) + 192, textures.format);
@@ -283,15 +399,20 @@ namespace MapMapLib
 									if (gs != null){
 										for (Int32 i = MMGridSquare.FLOOR; i <= MMGridSquare.TOP; i++){
 											foreach (MMTile mmtile in gs.GetTiles(i)){
+												bool isJumbo = false;
 												String tile = mmtile.tile;
+												if (tile.Replace("JUMBO", "") != tile){
+													isJumbo = true;
+												}
 												if (tile != null && this.textures.Textures.ContainsKey(tile)){
 													this.textures.Textures[tile].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
 													// Console.WriteLine("Drawing {0} at {1}+{2}x{3}+{4}", tile, drawx, mmtile.offX, drawy, mmtile.offY);
 													drawCnt++;
 												} else {
+													//Console.WriteLine("tile {0} not found", tile);
 													String needle = tile.Split('_')[0] + "_" + tile.Split('_')[1];
 													// Console.WriteLine("Searching for collage: {0}", needle);
-													if (this.collages.ContainsKey(needle)){
+													if (this.collages.ContainsKey(needle.Replace("JUMBO", ""))){
 														// Console.WriteLine("Drawing from collage instead");
 														Dictionary<String, List<String>> collageCategory;
 														this.collages.TryGetValue(needle, out collageCategory);
@@ -300,7 +421,13 @@ namespace MapMapLib
 														sprites = collageCategory.ElementAt(rand.Next(0, collageCategory.Count)).Value;
 														foreach (String sprite in sprites){
 															if (this.textures.Textures.ContainsKey(sprite)){
-																this.textures.Textures[sprite].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
+																String rSprite = sprite;
+																if (isJumbo && bigtree){
+																	String[] splits = new String[4];
+																	splits = sprite.Split('_');
+																	rSprite = splits[0]+"_"+splits[1]+"JUMBO_"+splits[2]+"_"+splits[3];
+																}
+																this.textures.Textures[rSprite].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
 																drawCnt++;
 															} else {
 																Console.WriteLine("Collages contain Unknown texture: {0}", sprite);
