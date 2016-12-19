@@ -24,6 +24,8 @@ namespace MapMapLib
 		public string name;
 		public Bitmap data;
 
+		private Object drawlock = new Object();
+
 		public MMTextureData(int x, int y, int w, int h, int offx, int offy, int ow, int oh, string name)
 		{
 			this.x = x;
@@ -50,7 +52,9 @@ namespace MapMapLib
 		{
 			Rectangle cloneRect = new Rectangle(0, 0, this.w, this.h);
 			Rectangle targRect = new Rectangle(bx + this.offx, by + this.offy, this.w, this.h);
-			target.DrawImage(this.data, targRect, cloneRect, GraphicsUnit.Pixel);
+			lock (this.drawlock){
+				target.DrawImage(this.data, targRect, cloneRect, GraphicsUnit.Pixel);
+			}
 		}
 	}
 }
