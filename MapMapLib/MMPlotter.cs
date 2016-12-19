@@ -429,12 +429,12 @@ e_yellowwoodJUMBO_1_9
 																}
 																this.textures.Textures[rSprite].Draw(gfx, drawx + mmtile.offX, drawy + mmtile.offY);
 																drawCnt++;
-															} else {
-																Console.WriteLine("Collages contain Unknown texture: {0}", sprite);
+															//} else {
+																//Console.WriteLine("Collages contain Unknown texture: {0}", sprite);
 															}
 														}
-													} else {
-														Console.WriteLine("Unknown texture: {0}", tile);
+													//} else {
+														//Console.WriteLine("Unknown texture: {0}", tile);
 													}
 												}
 											}

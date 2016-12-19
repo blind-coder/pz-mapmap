@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System;
+using System.Threading;
 using MapMapLib;
 using System.IO;
 
@@ -29,6 +31,10 @@ namespace MapMap
 		private int maxY = 99999;
 		private int divider = 3;
 		private bool bigtree = false;
+		private static int numThreads = 0;
+		private int maxThreads = 1;
+
+		private MMCellData childMapData;
 
 		public Main()
 		{
@@ -72,7 +78,7 @@ namespace MapMap
 		{
 			MMCellReader cellReader = new MMCellReader();
 			MMBinReader binReader = new MMBinReader();
-			MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers, this.bigtree);
+			// MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers, this.bigtree);
 			foreach (string mapPath in this.mapsources) {
 				if (Directory.Exists(mapPath)) {
 					string[] packs = Directory.GetFiles(mapPath, "*.lotpack");
@@ -105,13 +111,30 @@ namespace MapMap
 										}
 									}
 								}
-								plotter.PlotData(mapdata, this.OutputDir, cellx, celly);
+
+								while (MapMap.Main.numThreads >= maxThreads){
+									Thread.Sleep(500);
+								}
+								MapMap.Main.numThreads++;
+								Console.WriteLine("Threads: {0}/{1}", MapMap.Main.numThreads, maxThreads);
+								MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers, this.bigtree);
+								//ThreadStart childref = new ThreadStart(this.RunPlotter);
+								//Thread childThread = new Thread(childref);
+								Thread childThread = new Thread(() => RunPlotter(plotter, mapdata, this.OutputDir, cellx, celly));
+								childThread.Start();
 							}
 						}
 					}
 
 				}
 			}
+		}
+
+		private static void RunPlotter(MMPlotter childPlotter, MMCellData childMapData, String OutputDir, int childCellX, int childCellY){
+			Console.WriteLine("Thread {0}x{1} started", childCellX, childCellY);
+			childPlotter.PlotData(childMapData, OutputDir, childCellX, childCellY);
+			MapMap.Main.numThreads--;
+			Console.WriteLine("Thread {0}x{1} finished", childCellX, childCellY);
 		}
 
 		private void readTexturePacks()
@@ -187,7 +210,10 @@ namespace MapMap
 							}
 							break;
 						case "-bigtree":
-							this.bigtree = true;
+							this.bigtree = Convert.ToBoolean(args[id + 1]);
+							break;
+						case "-maxthreads":
+							this.maxThreads = Convert.ToInt32(args[id + 1]);
 							break;
 						case "-minx":
 							this.minX = Convert.ToInt32(args[id + 1]);
@@ -203,9 +229,9 @@ namespace MapMap
 							break;
 					}
 				}
-				Console.WriteLine("Boundaries: minx {0} maxx {1} miny {2} maxy {3}", this.minX, this.maxX, this.minY, this.maxY);
-				//var choice = Console.ReadKey(true);
 				Console.Clear();
+				Console.WriteLine("Boundaries: minx {0} maxx {1} miny {2} maxy {3}", this.minX, this.maxX, this.minY, this.maxY);
+				Console.WriteLine("Threads: {0}", this.maxThreads);
 				Console.WriteLine("Starting programm...");
 				return true;
 			}

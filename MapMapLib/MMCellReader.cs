@@ -21,7 +21,8 @@ namespace MapMapLib
 
 		public MMCellData Read(string datafile, string headerfile)
 		{
-			this.cellData.Reset();
+			//this.cellData.Reset();
+			this.cellData = new MMCellData();
 			List<string> tiles = new List<string>();
 			if (File.Exists(headerfile))
 			{
