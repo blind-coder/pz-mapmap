@@ -383,6 +383,17 @@ e_yellowwoodJUMBO_1_9
 					{
 						for (int z = 0; z < 8; z++)
 						{
+							if (this.dolayers){
+								if (File.Exists(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_layer_" + z + ".png")){
+									Console.WriteLine("Skipping {0}x{1}_{2}x{3} layer {4} because file exists", cellx, celly, subx, suby, z);
+									continue;
+								}
+							} else {
+								if (File.Exists(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_full.png")){
+									Console.WriteLine("Skipping {0}x{1}_{2}x{3} layer full because file exists", cellx, celly, subx, suby);
+									continue;
+								}
+							}
 							int drawCnt = 0;
 							for (int x = 0; x < this.subWH; x++)
 							{
