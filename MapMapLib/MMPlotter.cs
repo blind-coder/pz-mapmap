@@ -26,8 +26,9 @@ namespace MapMapLib
 		private Random rand;
 		private BushInit[] bush;
 		private PlantInit[] plant;
+		private Int32 scale;
 
-		public MMPlotter(int divider, MMTextures textures, bool dolayers, bool bigtree)
+		public MMPlotter(int divider, MMTextures textures, bool dolayers, bool bigtree, Int32 scale)
 		{
 			Dictionary<String, List<String>> collageCategory;
 			List<String> collageSprites;
@@ -353,6 +354,7 @@ e_yellowwoodJUMBO_1_9
 
 			this.rand = new Random();
 			this.subDiv = divider;
+			this.scale = scale;
 			this.subWH = (300 / this.subDiv);
 			this.startX = (1280 * 30 / this.subDiv / 2) - 64;
 			this.dolayers = dolayers;
@@ -455,13 +457,19 @@ e_yellowwoodJUMBO_1_9
 							}
 							if (this.dolayers == true && drawCnt > 0)
 							{
-								this.subCell.Save(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_layer_" + z + ".png", System.Drawing.Imaging.ImageFormat.Png);
+								Bitmap resized = new Bitmap(this.subCell,new Size(this.subCell.Width/this.scale,this.subCell.Height/this.scale));
+								resized.Save(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_layer_" + z + ".png", System.Drawing.Imaging.ImageFormat.Png);
+
+								//this.subCell.Save(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_layer_" + z + ".png", System.Drawing.Imaging.ImageFormat.Png);
 								gfx.Clear(Color.Transparent);
 							}
 						}
 						if (this.dolayers == false)
 						{
-							this.subCell.Save(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_full.png", System.Drawing.Imaging.ImageFormat.Png);
+							Bitmap resized = new Bitmap(this.subCell,new Size(this.subCell.Width/this.scale,this.subCell.Height/this.scale));
+							resized.Save(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_full.png", System.Drawing.Imaging.ImageFormat.Png);
+
+							//this.subCell.Save(outputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_full.png", System.Drawing.Imaging.ImageFormat.Png);
 							gfx.Clear(Color.Transparent);
 						}
 					}
