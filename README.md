@@ -46,7 +46,7 @@ Mapname_output/
 
 Now run the command:
 ```
-MapMap.exe -tiledef tiledefinitions -gfxsource TexturePacks\Erosion.pack -gfxsource TexturePacks\Tiles2x.pack -gfxsource TexturePacks\Tiles2x.floor.pack -gfxsource TexturePacks\ApCom.pack -gfxsource texturepacks\RadioIcons.pack -gfxsource TexturePacks\ApComUI.pack -mapsource Mapname_lotpack -output Mapname_output\ -dolayers true -divider 4 -maxthreads 2
+MapMap.exe -gfxsource TexturePacks\Erosion.pack -gfxsource TexturePacks\Tiles2x.pack -gfxsource TexturePacks\Tiles2x.floor.pack -gfxsource TexturePacks\ApCom.pack -gfxsource texturepacks\RadioIcons.pack -gfxsource TexturePacks\ApComUI.pack -mapsource Mapname_lotpack -output Mapname_output\ -dolayers true -divider 4 -maxthreads 2
 ```
 
 A lot of png files will be created in the `Mapname_output` directory, occupying - depending on the size of your map - possibly hundreds of GB of space. For reference, the main Project Zomboid map occupies 461 GB after this.
