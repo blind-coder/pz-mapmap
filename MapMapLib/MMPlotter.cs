@@ -359,12 +359,12 @@ e_yellowwoodJUMBO_1_9
 			this.bigtree = bigtree;
 			if (this.dolayers == true)
 			{
-				this.subCell = new Bitmap(1280 * 30 / divider, (640 * 30 / divider) + 192, textures.format);
+				this.subCell = new Bitmap(1280 * 30 / divider, (640 * 30 / divider) + 192, System.Drawing.Imaging.PixelFormat.Format32bppPArgb); //textures.format);
 				this.startY = 0;
 			}
 			else
 			{
-				this.subCell = new Bitmap(1280 * 30 / divider, (640 * 30 / divider) + (192 * 8), textures.format);
+				this.subCell = new Bitmap(1280 * 30 / divider, (640 * 30 / divider) + (192 * 8), System.Drawing.Imaging.PixelFormat.Format32bppPArgb); //textures.format);
 				this.startY = 192 * 7;
 			}
 			this.textures = textures;
