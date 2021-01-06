@@ -33,6 +33,7 @@ namespace MapMap
 		private bool bigtree = false;
 		private static int numThreads = 0;
 		private int maxThreads = 1;
+		private int scale = 1;
 
 		private MMCellData childMapData;
 
@@ -117,7 +118,7 @@ namespace MapMap
 								}
 								MapMap.Main.numThreads++;
 								Console.WriteLine("Threads: {0}/{1}", MapMap.Main.numThreads, maxThreads);
-								MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers, this.bigtree);
+								MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers, this.bigtree, this.scale);
 								//ThreadStart childref = new ThreadStart(this.RunPlotter);
 								//Thread childThread = new Thread(childref);
 								Thread childThread = new Thread(() => RunPlotter(plotter, mapdata, this.OutputDir, cellx, celly));
@@ -226,6 +227,9 @@ namespace MapMap
 							break;
 						case "-maxy":
 							this.maxY = Convert.ToInt32(args[id + 1]);
+							break;
+						case "-scale":
+							this.scale = Convert.ToInt32(args[id + 1]);
 							break;
 					}
 				}
