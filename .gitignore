@@ -6,3 +6,5 @@ obj
 *tiles
 lib
 output
+.vs
+*.csproj.user

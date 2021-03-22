@@ -1,10 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <StartArguments>-mapsource "C:\Program Files (x86)\Steam\steamapps\common\ProjectZomboid\media\maps\Muldraugh, KY" -gfxsource "C:\Program Files (x86)\Steam\steamapps\common\ProjectZomboid\media\texturepacks\Tiles.pack" -minx 34 -miny 30 -maxx 37 -maxy 36 -divider 1 -dolayers false</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <StartArguments>-mapsource "C:\Program Files (x86)\Steam\steamapps\common\ProjectZomboid\media\maps\Muldraugh, KY" -gfxsource "C:\Program Files (x86)\Steam\steamapps\common\ProjectZomboid\media\texturepacks\Tiles.pack" -minx 34 -miny 30 -maxx 37 -maxy 36 -divider 1 -dolayers false</StartArguments>
+    <StartArguments>-gfxsource TexturePacks\ApCom.pack -gfxsource TexturePacks\JumboTrees2x.pack -gfxsource TexturePacks\normandytextures.pack -gfxsource TexturePacks\Tiles2x.floor.pack -gfxsource TexturePacks\Tiles2x.pack -gfxsource TexturePacks\WeatherFx.pack -mapsource "1. Cherbourg_lotpack" -output "2. Cherbourg_output" -dolayers false -divider 4 -maxthreads 2 -scale 4 -minx 49 -miny 22 -maxx 49 -maxy 22</StartArguments>
+    <StartWorkingDirectory>D:\Cherburg\pz-mapmap-master</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <PublishUrlHistory>publish\</PublishUrlHistory>

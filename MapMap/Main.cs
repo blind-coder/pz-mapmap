@@ -30,7 +30,7 @@ namespace MapMap
 		private int minY = -99999;
 		private int maxY = 99999;
 		private int divider = 3;
-		private bool bigtree = false;
+		private bool bigtree = true;
 		private static int numThreads = 0;
 		private int maxThreads = 1;
 		private int scale = 1;
@@ -79,21 +79,115 @@ namespace MapMap
 		{
 			MMCellReader cellReader = new MMCellReader();
 			MMBinReader binReader = new MMBinReader();
+
+			List<int>[] waterCells = new List<int>[60]; // TODO временно
+			waterCells[0] = new List<int> { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[1] = new List<int> { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[2] = new List<int> { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[3] = new List<int> { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[4] = new List<int> { 0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[5] = new List<int> { 0, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[6] = new List<int> { 0, 1, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[7] = new List<int> { 0, 1, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[8] = new List<int> { 0, 1, 2, 7, 8, 9, 10, 11, 12 };
+			waterCells[9] = new List<int> { 0, 1, 5, 9, 10, 11, 12 };
+			waterCells[10] = new List<int> { 0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+			waterCells[11] = new List<int> { 0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+			waterCells[12] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15 };
+			waterCells[13] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15 };
+			waterCells[14] = new List<int> { 0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15 };
+			waterCells[15] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15 };
+			waterCells[16] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+			waterCells[17] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+			waterCells[18] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+			waterCells[19] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+			waterCells[20] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[21] = new List<int> { 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[22] = new List<int> { 0, 1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[23] = new List<int> { 0, 1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[24] = new List<int> { 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[25] = new List<int> { 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[26] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+			waterCells[27] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[28] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+			waterCells[29] = new List<int> { 0, 1, 2, 3, 6, 7, 8, 9, 11, 12, 13, 14 };
+			waterCells[30] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14 };
+			waterCells[31] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+			waterCells[32] = new List<int> { 0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11 };
+			waterCells[33] = new List<int> { 0, 1, 2, 3, 7, 8, 9, 10 };
+			waterCells[34] = new List<int> { 0, 1, 2, 7, 8, 9, 10, 11, 12 };
+			waterCells[35] = new List<int> { 0, 1, 2, 7, 8, 9, 10, 11, 12 };
+			waterCells[36] = new List<int> { 0, 1, 2, 8, 9, 10, 11 };
+			waterCells[37] = new List<int> { 0, 1 };
+			waterCells[38] = new List<int> { 0, 1 };
+			waterCells[39] = new List<int> { 0, 1, 4, 5 };
+			waterCells[40] = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
+			waterCells[41] = new List<int> { 0, 1, 3, 6 };
+			waterCells[42] = new List<int> { 0, 1 };
+			waterCells[43] = new List<int> { 0, 1 };
+			waterCells[44] = new List<int> { 0, 1, 2 };
+			waterCells[45] = new List<int> { 0, 1, 2, 3 };
+			waterCells[46] = new List<int> { 0, 1, 2, 3 };
+			waterCells[47] = new List<int> { 0, 1 };
+			waterCells[48] = new List<int> { 0, 1 };
+			waterCells[49] = new List<int> { 0 };
+			waterCells[50] = new List<int> { 0 };
+			waterCells[51] = new List<int> { 0 };
+			waterCells[53] = new List<int> { 0 };
+			waterCells[54] = new List<int> { 0 };
+			waterCells[55] = new List<int> { 0 };
+
 			// MMPlotter plotter = new MMPlotter(this.divider, this.tex, this.dolayers, this.bigtree);
 			foreach (string mapPath in this.mapsources) {
 				if (Directory.Exists(mapPath)) {
 					string[] packs = Directory.GetFiles(mapPath, "*.lotpack");
+					packs = packs.OrderBy(x => x).ToArray();
 					foreach (string file in packs) {
 						string filename = file.Substring(file.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 						string[] fileparts = filename.Split(new Char[] { '.' });
 						string[] nameparts = fileparts[0].Split(new Char[] { '_' });
 						int cellx = Convert.ToInt32(nameparts[1]);
 						int celly = Convert.ToInt32(nameparts[2]);
+						if (waterCells[cellx] != null && waterCells[cellx].BinarySearch(celly) > 0)
+                        {
+							Console.WriteLine("Ячейка с водой: {0} - {1}", cellx, celly);
+							continue;
+                        }
 						if (cellx >= this.minX && cellx <= this.maxX  && celly >= this.minY && celly <= this.maxY) {
 							string headerFile = nameparts[1] + "_" + nameparts[2] + ".lotheader";
 							string headerPath = mapPath + Path.DirectorySeparatorChar + headerFile;
 							if (File.Exists(headerPath)) { // lotpack
-								Console.WriteLine("Working on cell: {0} - {1}", nameparts[1], nameparts[2]);
+								Console.WriteLine("Обрабатываю ячейку: {0} - {1}", cellx, celly);
+								bool allSubCellExist = true;
+								for (int subx = 0; subx < this.divider; subx++)
+								{
+									for (int suby = 0; suby < this.divider; suby++)
+									{
+										for (int z = 0; z < 8; z++)
+										{
+											if (this.dolayers)
+											{
+												if (!File.Exists(this.OutputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_layer_" + z + ".png"))
+												{
+													allSubCellExist = false;
+													goto LoopEnd;
+												}
+											}
+											else
+											{
+												if (!File.Exists(this.OutputDir + "cell_" + cellx + "_" + celly + "_subcell_" + subx + "_" + suby + "_full.png"))
+												{
+													allSubCellExist = false;
+													goto LoopEnd;
+												}
+											}
+										}
+									}
+								}
+								LoopEnd: if (allSubCellExist) {
+									Console.WriteLine("Созданы все элементы для ячейки: {0} - {1}", cellx, celly);
+									continue;
+								}
 								MMCellData mapdata = cellReader.Read(file, headerPath);
 
 								foreach (string savePath in this.mapsources) {
@@ -170,9 +264,14 @@ namespace MapMap
 					switch (args[id])
 					{
 						case "-output":
+							// TODO проверка на наличие слэша в конце
 							string output = Path.GetFullPath(args[id + 1]);
 							if (output != null)
 							{
+								if (!output.EndsWith("\\"))
+								{
+									output = output + "\\";
+								}
 								if (!Directory.Exists(this.OutputDir)) Directory.CreateDirectory(this.OutputDir);
 								this.OutputDir = output;
 							}

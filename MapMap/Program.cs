@@ -17,6 +17,7 @@ namespace MapMap
 			Main main = new Main();
 
 			main.Run(args);
+			Console.ReadKey(true);
 		}
 	}
 }
