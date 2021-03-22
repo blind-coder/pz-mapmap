@@ -148,16 +148,15 @@ namespace MapMap
 						string[] nameparts = fileparts[0].Split(new Char[] { '_' });
 						int cellx = Convert.ToInt32(nameparts[1]);
 						int celly = Convert.ToInt32(nameparts[2]);
-						if (waterCells[cellx] != null && waterCells[cellx].BinarySearch(celly) > 0)
-                        {
-							Console.WriteLine("ячейка с водой: {0} - {1}", cellx, celly);
+						if (waterCells[cellx] != null && waterCells[cellx].BinarySearch(celly) > 0) {
+							Console.WriteLine("Skipping cell: {0} - {1}", cellx, celly);
 							continue;
-                        }
+						}
 						if (cellx >= this.minX && cellx <= this.maxX  && celly >= this.minY && celly <= this.maxY) {
 							string headerFile = nameparts[1] + "_" + nameparts[2] + ".lotheader";
 							string headerPath = mapPath + Path.DirectorySeparatorChar + headerFile;
 							if (File.Exists(headerPath)) { // lotpack
-								Console.WriteLine("ќбрабатываю €чейку: {0} - {1}", cellx, celly);
+								Console.WriteLine("Working on cell: {0} - {1}", cellx, celly);
 								bool allSubCellExist = true;
 								for (int subx = 0; subx < this.divider; subx++)
 								{
@@ -185,7 +184,7 @@ namespace MapMap
 									}
 								}
 								LoopEnd: if (allSubCellExist) {
-									Console.WriteLine("—озданы все элементы дл€ €чейки: {0} - {1}", cellx, celly);
+									Console.WriteLine("All subcells exist, skipping cell: {0} - {1}", cellx, celly);
 									continue;
 								}
 								MMCellData mapdata = cellReader.Read(file, headerPath);
