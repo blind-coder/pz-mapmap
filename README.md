@@ -50,6 +50,6 @@ MapMap.exe -gfxsource TexturePacks\Erosion.pack -gfxsource TexturePacks\Tiles2x.
 ```
 
 A lot of png files will be created in the `Mapname_output` directory, occupying - depending on the size of your map - possibly hundreds of GB of space. For reference, the main Project Zomboid map occupies 461 GB after this.
-When you are done with this, you need to head over to the pz-deepzoom repository and continue there.
+When you are done with this, you need to head over to the deepzoom-utils repository (https://github.com/blind-coder/deepzoom-utils) and continue there.
 
 
